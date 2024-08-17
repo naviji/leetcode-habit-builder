@@ -1,0 +1,24 @@
+{
+  "name": "leetcode-habit-builder",
+  "description": "An extension to force you to do some leetcode everyday",
+  "version": "1.0.0",
+  "main": "popup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naviji/leetcode-habit-builder.git"
+  },
+  "author": "Naveen M V",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naviji/leetcode-habit-builder/issues"
+  },
+  "homepage": "https://github.com/naviji/leetcode-habit-builder#readme",
+  "dependencies": {
+    "@types/chrome": "^0.0.270"
+  }
+}
