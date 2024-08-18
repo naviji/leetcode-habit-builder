@@ -20,5 +20,20 @@
                 "https://leetcode.com/*"
             ]
         }
-    ]
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "declarativeNetRequest",
+        "declarativeNetRequestFeedback",
+        "webRequest",
+        "tabs",
+        "storage",
+        "activeTab",
+        "alarms"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+      ]
   }
