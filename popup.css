@@ -1,0 +1,91 @@
+:root {
+    --main-bg: black;
+    --main-color: white;
+    --main-branding: purple;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: unset;
+    font-family: Arial, Helvetica, sans-serif;
+    outline: 1px solid white;
+  }
+
+  .container {
+    color: var(--main-color);
+    width: 25rem;
+    font-size: 1.2rem;
+    background: var(--main-bg);
+    outline: 1px solid red;
+  }
+  
+  header {
+    display: flex;
+    margin: 0 auto;
+    padding: 0.5em 0.5em;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--main-branding);
+  }
+  
+  header > h1 {
+    margin: 0;
+    display: inline-block;
+    font-size: unset;
+/*     font-size: 1rem; */
+  }
+  
+  #settings-icon {
+    color: var(--main-color);
+    padding-left: 0.5em;
+    padding-right: 0.5em;  
+  }
+  
+  header svg {
+    display: block;
+  }
+  
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.2em 1.2em 1.5em 1.2em;
+  }
+  
+  main > p {
+    margin: 0 0;
+  }
+  
+  #quote {
+    margin-top: 0;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+#intro {
+  font-size: 1rem;
+}
+  
+  #question {
+    text-align: center;
+    margin-top: 0.2em;
+    font-size: 1.2rem;
+  }
+  
+  main > .solve-btn {
+    background: var(--main-branding);
+    border-radius: 0.5em;
+  }
+
+main > .solve-btn > a {
+  display: block;
+  color: var(--main-color);
+  text-decoration: none;
+  padding: 0.5em 4em;
+    
+}
