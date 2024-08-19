@@ -4,31 +4,122 @@
   </head>
   <body>
     <div class="container">
-      <header>
+      <header class="header-main">
         <h1>Welcome to the LeetCode Grind</h1>
-        <div id="settings-icon">
-          <a href="#">
-                  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
-          </svg>
-          </a>
-    
-        </div>
+        <a href="#">
+  
+          <div id="settings-icon">
+            <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+              <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+            </svg>
+  
+          </div>
+        </a>
+  
       </header>
-    
       <main>
-    
-        <h3 id="quote">"A LeetCode a day keeps unemployment away"</h3>
-    
-        <p id="intro">Today's Question</p>
-        <h2 id="question">Maximum Sum of an Hourglass</h2>
-    
-        <div class="solve-btn">
-          <a href="#">Solve it</a>
+        <div class="home-page">
+          <h3 id="quote">"A LeetCode a day keeps unemployment away"</h3>
+  
+          <p id="intro">Today's Question</p>
+          <h2 id="question">Maximum Sum of an Hourglass</h2>
+  
+          <div id="solve-btn">
+            <a href="#">Solve it</a>
+          </div>
         </div>
-    
       </main>
-    
+  
+    </div>
+    <div id="settings-page" class="settings-page container">
+      <header class="header-settings">
+        <a href="#">
+          <div id="arrow-icon">
+  
+            <div class="arrow-left"></div>
+          </div>
+  
+        </a>
+        <h1>Settings</h1>
+  
+      </header>
+  
+      <main>
+        <div style="outline:1px solid red" class="settings">
+          <ul class="settings-container">
+            <li>
+              <div class="settings-item">
+                <div class="item-info">
+                  <h4 class="item-title">Disable the torture</h4>
+                  <p class="item-description">Click to disable/enable redirects</p>
+                </div>
+                <div class="item-action">
+                  <input type="checkbox">
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="settings-item">
+                <div class="item-info">
+                  <h4 class="item-title">Problem Sets</h4>
+                  <p class="item-description">Choose the leetcode problems you'd like</p>
+                </div>
+                <div class="item-action">
+                    <select name="problem-set" id="problem-set">
+      <option value="leetcode-all">All Leetcode Problems</option>
+      <option value="neetcode-150">Neetcode 150</option>
+    </select>
+                </div>
+              </div>
+              
+            </li>
+            
+            <li>
+               <div class="settings-item">
+                <div class="item-info">
+                  <h4 class="item-title">Problem Difficulty</h4>
+                  <p class="item-description">Choose the leetcode difficulty you'd like</p>
+                </div>
+                <div class="item-action">
+                    <select name="problem-set" id="problem-set">
+      <option value="all">All difficulties</option>
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+                </div>
+              </div>
+            </li>
+            
+            
+            <li>
+               <div class="settings-item">
+                <div class="item-info">
+                  <h4 class="item-title">Include Premium Problems</h4>
+                  <p class="item-description">Toggle whether to include premium problems</p>
+                </div>
+                <div class="item-action">
+                  <input type="checkbox">
+                </div>
+              </div>
+            </li>
+            
+            
+            <li>
+               <div class="settings-item">
+                <div class="item-info">
+                  <h4 class="item-title">Enable "Hyper Torture" mode</h4>
+                  <p class="item-description">Toggle mode that forces you to solve a problem every time you open a new tab</p>
+                </div>
+                <div class="item-action">
+                  <input type="checkbox">
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </main>
+  
     </div>
     <script src="popup.js"></script>
   </body>

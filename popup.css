@@ -1,3 +1,7 @@
+/* .main-container {
+  display: flex;
+} */
+
 :root {
     --main-bg: black;
     --main-color: white;
@@ -13,18 +17,24 @@
   body {
     margin: unset;
     font-family: Arial, Helvetica, sans-serif;
-    outline: 1px solid white;
   }
-
+  
   .container {
     color: var(--main-color);
     width: 25rem;
     font-size: 1.2rem;
     background: var(--main-bg);
-    outline: 1px solid red;
   }
   
-  header {
+  .home-page {
+    display: flex;
+    flex-direction: column;
+  /*   justify-content: space-between; */
+    align-items: center;
+    padding: 1.2em 1.2em 1.5em 1.2em;
+  }
+  
+  .header-main {
     display: flex;
     margin: 0 auto;
     padding: 0.5em 0.5em;
@@ -33,31 +43,60 @@
     background: var(--main-branding);
   }
   
-  header > h1 {
+  .header-settings {
+    display: flex;
+    margin: 0 auto;
+    padding: 0.5em 0.5em;
+    align-items: center;
+    justify-content: flex-start;
+    background: var(--main-branding);
+  }
+  
+  .header-settings > h1 {
     margin: 0;
     display: inline-block;
     font-size: unset;
-/*     font-size: 1rem; */
+    padding-left: 0.5em;
+  }
+  
+  .header-main > h1 {
+    margin: 0;
+    display: inline-block;
+    font-size: unset;
+    padding-left: 0.5em;
   }
   
   #settings-icon {
     color: var(--main-color);
     padding-left: 0.5em;
-    padding-right: 0.5em;  
+    padding-right: 0.5em;
   }
   
-  header svg {
+  #arrow-icon {
+    height: 28.5px;
+    position: relative;
+    padding-top: 0.1em;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+  }
+  .arrow-left {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  
+    border-right: 10px solid var(--main-color);
+  }
+  
+  .header-main > svg {
     display: block;
   }
   
   main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1.2em 1.2em 1.5em 1.2em;
+  /*   height: 100%; */
   }
   
-  main > p {
+  #intro {
     margin: 0 0;
   }
   
@@ -66,10 +105,10 @@
     text-align: center;
     font-size: 1rem;
   }
-
-#intro {
-  font-size: 1rem;
-}
+  
+  #intro {
+    font-size: 1rem;
+  }
   
   #question {
     text-align: center;
@@ -77,15 +116,66 @@
     font-size: 1.2rem;
   }
   
-  main > .solve-btn {
+  #solve-btn {
     background: var(--main-branding);
     border-radius: 0.5em;
   }
-
-main > .solve-btn > a {
-  display: block;
-  color: var(--main-color);
-  text-decoration: none;
-  padding: 0.5em 4em;
-    
-}
+  
+  #solve-btn > a {
+    display: block;
+    color: var(--main-color);
+    text-decoration: none;
+    padding: 0.5em 4em;
+  }
+  
+  .settings {
+    width: 100%;
+  }
+  
+  .settings-container > li {
+    width: 100%;
+  }
+  .settings-container {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .settings-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5em 0;
+  }
+  
+  .item-info {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em;
+  }
+  
+  .item-action {
+    padding: 0 0.5em;
+    margin: auto 0;
+  }
+  
+  .item-title {
+    font-size: 1rem;
+    padding: 0;
+    padding-bottom: 0.2em;
+    margin: 0;
+  }
+  
+  .item-description {
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+  }
+  
+  .container.settings-page {
+    position: fixed;
+    left: 0;
+    top:0;
+    display:none;
+  }

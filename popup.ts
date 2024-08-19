@@ -1,20 +1,25 @@
 
 document.addEventListener('DOMContentLoaded', function() {
-    const startButton = document.getElementById('startButton');
-    const endButton = document.getElementById('endButton');
-  
-    if (startButton) {
-        startButton.addEventListener('click', function() {
-            setRedirectRule('https://leetcode.com/problems/valid-anagram/');
+    const settingsButton = document.getElementById('settings-icon');
+    if (settingsButton) {
+        settingsButton.addEventListener('click', function() {
+            // setRedirectRule('https://leetcode.com/problems/valid-anagram/');
+            const settingsPage = document.getElementById('settings-page');
+            if (settingsPage) {
+                settingsPage.style.display = 'block';
+            }
           });
     }
 
-    if (endButton) {
-        endButton.addEventListener('click', function() {
-            unsetRedirectRule();
-        });
+    const backArrow = document.getElementById('arrow-icon');
+    if (backArrow) {
+        backArrow.addEventListener('click', function() {
+            const settingsPage = document.getElementById('settings-page');
+            if (settingsPage) {
+                settingsPage.style.display = 'none';
+            }
+          });
     }
-
   });
 
 function setRedirectRule(redirectUrl: string) {
