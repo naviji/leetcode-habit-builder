@@ -1,7 +1,9 @@
+// https://github.com/microsoft/TypeScript/issues/49083#issuecomment-1435399267
+import { setRedirectRule, unsetRedirectRule } from './redirect.js'
+
 const settingsButton = document.getElementById("settings-icon");
 if (settingsButton) {
   settingsButton.addEventListener("click", function () {
-    // setRedirectRule('https://leetcode.com/problems/valid-anagram/');
     const settingsPage = document.getElementById("settings-page");
     if (settingsPage) {
       settingsPage.classList.toggle("visible");
@@ -19,33 +21,21 @@ if (backArrow) {
   });
 }
 
-function setRedirectRule(redirectUrl: string) {
-  console.log("Calling setRedirectRule");
-  const hostname = new URL(redirectUrl).hostname;
-  const redirectRule: chrome.declarativeNetRequest.Rule = {
-    id: 1,
-    action: {
-      type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
-      redirect: { url: redirectUrl }
-    },
-    condition: {
-      urlFilter: "*://*/*",
-      excludedInitiatorDomains: [
-        "developer.chrome.com", // To ease development
-        hostname
-      ],
-      resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME]
+const disableTorture = document.getElementById("disable-torture-checkbox")  as HTMLInputElement | null;
+if (disableTorture) {
+  const storedState = localStorage.getItem('disableTorture');
+  if (storedState) {
+    disableTorture.checked = (storedState === 'true');
+  }
+
+  disableTorture.addEventListener("change", function () {
+    const newState = disableTorture.checked;
+    localStorage.setItem('disableTorture', newState.toString());
+    if (newState) {
+      setRedirectRule('https://leetcode.com/problems/valid-anagram/');
+    } else {
+      unsetRedirectRule();
     }
-  };
-  chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [1],
-    addRules: [redirectRule]
   });
 }
 
-function unsetRedirectRule() {
-  console.log("Calling unsetRedirectRule");
-  chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [1]
-  });
-}

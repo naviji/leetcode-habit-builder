@@ -17,7 +17,7 @@
       "noUnusedParameters": true,
       "noFallthroughCasesInSwitch": true
     },
-    "files": [
-      "popup.ts",
+    "includes": [
+      "*.ts",
     ]
 }
