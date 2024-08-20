@@ -19,7 +19,5 @@
     },
     "files": [
       "popup.ts",
-      "background.ts",
-      "scripts/content.ts"
     ]
 }

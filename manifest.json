@@ -5,7 +5,7 @@
     "version": "1.0",
     "action": {
       "default_popup": "popup.html",
-      "default_icon": "icon.png"
+      "default_icon": "images/icon.png"
     },
     "icons": {
         "16": "images/icon-16.png",
@@ -13,25 +13,13 @@
         "48": "images/icon-48.png",
         "128": "images/icon-128.png"
     },
-    "content_scripts": [
-        {
-            "js": ["scripts/content.js"],
-            "matches": [
-                "https://leetcode.com/*"
-            ]
-        }
-    ],
-    "background": {
-        "service_worker": "background.js"
-    },
     "permissions": [
         "declarativeNetRequest",
         "declarativeNetRequestFeedback",
         "webRequest",
         "tabs",
         "storage",
-        "activeTab",
-        "alarms"
+        "activeTab"
     ],
     "host_permissions": [
         "<all_urls>"

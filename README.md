@@ -2,6 +2,7 @@
 
 
 # TODO
+1. Indicator that the extension is active 
 7. Redirect to intended page after completing problem
 8. Always detect completion
 0. Use requests that check if the redirect is happening to our problem url
