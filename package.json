@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "main": "popup.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run clean && tsc --outDir ./dist && mkdir -p dist/images && cp -r images/ dist/images && cp manifest.json dist/ && cp popup.html dist/ && cp popup.css dist/",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "build": "npm run clean && tsc --outDir ./dist && mkdir -p dist/images dist/problems && cp -r images/ dist/images && cp -r problems/ dist/problems && cp manifest.json dist/ && cp popup.html dist/ && cp popup.css dist/",
     "watch": "tsc --outDir ./dist --watch",
     "clean": "rm -rf dist && mkdir dist"
   },
@@ -21,5 +21,8 @@
   "homepage": "https://github.com/naviji/leetcode-habit-builder#readme",
   "dependencies": {
     "@types/chrome": "^0.0.270"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
   }
 }

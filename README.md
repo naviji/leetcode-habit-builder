@@ -2,6 +2,7 @@
 
 
 # TODO
+0. Sync chrome.storage instead of local storage
 1. Indicator that the extension is active 
 7. Redirect to intended page after completing problem
 8. Always detect completion
