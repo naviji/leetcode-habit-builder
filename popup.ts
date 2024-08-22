@@ -54,16 +54,14 @@ if (disableTorture) {
   }
 
   disableTorture.addEventListener("change", async function () {
-    const newState = disableTorture.checked;
-    await chrome.storage.sync.set({ enabled: !!newState });
+    await chrome.storage.sync.set({ enabled: !disableTorture.checked });
   });
 }
-
 
 async function setProblemText() {
   const { state }: { state: State } = await chrome.runtime.sendMessage({
     action: "getState",
-  })
+  });
 
   if (!state.problem) {
     console.log("No problem found");

@@ -1,6 +1,16 @@
 import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
 import { getProblem, Problem } from "./problems.js";
 
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+    console.log("ON INSTALLED", reason);
+    if (reason === 'install') {
+      await syncProblem();
+      await synEnabledState();
+    }
+  });
+
+
+
 const state = {
     problem: null as Problem | null,
     enabled: true,
@@ -9,6 +19,7 @@ const state = {
 export type State = typeof state;
 
 chrome.storage.onChanged.addListener((changes, area) => {
+    console.log("ON CHANGED", changes, area);
     if (area === "sync") {
         if ("problem" in changes) {
             state.problem = changes.problem.newValue;
@@ -29,19 +40,13 @@ chrome.storage.onChanged.addListener((changes, area) => {
     }
 });
 
-chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-    console.log("ON INSTALLED", reason);
-    if (reason === 'install') {
-      await syncProblem();
-      await synEnabledState();
-    }
-  });
 
 async function syncProblem() {
     const { problem }: { problem?: Problem; } = await chrome.storage.sync.get("problem");
     if (!problem) {
         const problem = await getProblem();
         await chrome.storage.sync.set({ problem });
+        state.problem = problem;
     } else {
         state.problem = problem;
     }
@@ -51,8 +56,9 @@ async function synEnabledState() {
     const { enabled }: { enabled?: boolean } = await chrome.storage.sync.get("enabled");
     if (enabled === undefined) {
         await chrome.storage.sync.set({ enabled: true });
+        state.enabled = true;
     } else {
-        state.enabled = enabled;
+        state.enabled = !!enabled;
     }
 }
 
