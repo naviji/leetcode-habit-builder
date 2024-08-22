@@ -1,18 +1,16 @@
-// https://github.com/microsoft/TypeScript/issues/49083#issuecomment-1435399267
-import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
-import { getProblem } from "./problems.js";
-import { Problem } from "./types.js";
-
+import { State } from "./background.js";
 
 const solveBtn = document.getElementById("solve-btn") as HTMLDivElement | null;
 if (solveBtn) {
   solveBtn.addEventListener("click", async function () {
-    const problem = await getProblem();
-    if (!problem) {
+    const { state }: { state: State } = await chrome.runtime.sendMessage({
+      action: "getState",
+    });
+    if (!state.problem) {
       console.log("No problem found");
       return;
     }
-    chrome.tabs.create({ url: problem.href });
+    chrome.tabs.create({ url: state.problem.href });
   });
 }
 
@@ -48,41 +46,37 @@ const disableTorture = document.getElementById(
   "disable-torture-checkbox",
 ) as HTMLInputElement | null;
 if (disableTorture) {
-  const storedState = localStorage.getItem("disableTorture");
-  if (storedState) {
-    disableTorture.checked = storedState === "true";
+  const { state }: { state: State } = await chrome.runtime.sendMessage({
+    action: "getState",
+  });
+  if (state.enabled) {
+    disableTorture.checked = state.enabled;
   }
 
   disableTorture.addEventListener("change", async function () {
     const newState = disableTorture.checked;
-    localStorage.setItem("disableTorture", newState.toString());
-    if (newState) {
-      const problem = await getProblem();
-      if (problem) {
-        await setRedirectRule(problem.href);
-      } else {
-        console.log("No problem found");
-      }
-    } else {
-      await unsetRedirectRule();
-    }
+    await chrome.storage.sync.set({ enabled: !!newState });
   });
 }
 
-async function setProblem() {
-  const problem = await getProblem();
-  setProblemText(problem);
-}
 
-function setProblemText(problem: Problem) {
+async function setProblemText() {
+  const { state }: { state: State } = await chrome.runtime.sendMessage({
+    action: "getState",
+  })
+
+  if (!state.problem) {
+    console.log("No problem found");
+    return;
+  }
   const problemTitle = document.getElementById("question");
   if (problemTitle) {
-    problemTitle.textContent = problem.text;
+    problemTitle.textContent = state.problem.text;
   }
 }
 
 async function initUI() {
-  await setProblem();
+  await setProblemText();
 }
 
 initUI();

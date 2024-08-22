@@ -19,7 +19,18 @@
 13. Fix the question vs redirection mismatch
     The problem seems to be the midnight alarm, changing the problem state but not the ui?
 14. Add an exclusion list of websites
+15. Add a cache for async storage calls
 
+15. Use this idea
+https://developer.chrome.com/docs/extensions/reference/api/storage#synchronous_response_to_storage_updates
+We can take this idea even further. In this example, we have an options page that allows the user to toggle a "debug mode" (implementation not shown here). The options page immediately saves the new settings to storage.sync, and the service worker uses storage.onChanged to apply the setting as soon as possible.
+
+
+
+check for reqeuests to submit url
+.onRequestComplete
+.executeScript to get the status text 
+. then call unregister.
 # References
 
 https://developer.chrome.com/docs/extensions/develop

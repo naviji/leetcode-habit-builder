@@ -1,18 +1,19 @@
-import { Problem } from "./types";
+export interface Problem {
+  category: string;
+  href: string;
+  text: string;
+  difficulty: string;
+  isPremium: boolean;
+}
+
+const url = "./problems/neetcode150.json"
 
 let problems: Problem[] = [];
 let isLoaded = false;
 
-export function setProblemText(problem: Problem) {
-  const problemTitle = document.getElementById("question");
-  if (problemTitle) {
-    problemTitle.textContent = problem.text;
-  }
-}
-
 async function loadProblems() {
   try {
-    const response = await fetch("./problems/neetcode150.json");
+    const response = await fetch(url);
     const data = await response.json();
     problems = data;
     isLoaded = true;
@@ -25,11 +26,6 @@ export async function getProblem() {
   if (!isLoaded) {
     await loadProblems();
   }
-  const problemIdx = localStorage.getItem("problemIdx");
-  if (problemIdx) {
-    return problems[parseInt(problemIdx)];
-  }
   const newProblemIdx = Math.floor(Math.random() * problems.length);
-  localStorage.setItem("problemIdx", newProblemIdx.toString());
   return problems[newProblemIdx];
 }
