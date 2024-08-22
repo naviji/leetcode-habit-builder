@@ -1,18 +1,6 @@
-import { State } from "./background.js";
+import { Problem } from "./problems";
+import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
 
-const solveBtn = document.getElementById("solve-btn") as HTMLDivElement | null;
-if (solveBtn) {
-  solveBtn.addEventListener("click", async function () {
-    const { state }: { state: State } = await chrome.runtime.sendMessage({
-      action: "getState",
-    });
-    if (!state.problem) {
-      console.log("No problem found");
-      return;
-    }
-    chrome.tabs.create({ url: state.problem.href });
-  });
-}
 
 const settingsButton = document.getElementById("settings-icon");
 if (settingsButton) {
@@ -46,35 +34,41 @@ const disableTorture = document.getElementById(
   "disable-torture-checkbox",
 ) as HTMLInputElement | null;
 if (disableTorture) {
-  const { state }: { state: State } = await chrome.runtime.sendMessage({
-    action: "getState",
-  });
-  if (state.enabled) {
-    disableTorture.checked = state.enabled;
+  const { disabled }: { disabled?: boolean } = await chrome.storage.sync.get("disabled")
+  if (disabled) {
+    disableTorture.checked = disabled;
   }
 
   disableTorture.addEventListener("change", async function () {
-    await chrome.storage.sync.set({ enabled: !disableTorture.checked });
+    await chrome.storage.sync.set({ disabled: !!disableTorture.checked });
+    if (disableTorture.checked) {
+      await unsetRedirectRule();
+    } else {
+      const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
+      if (problem) {
+        await setRedirectRule(problem.href);
+      } else {
+        console.log("Error: No problem set");
+      }
+    }
   });
 }
 
-async function setProblemText() {
-  const { state }: { state: State } = await chrome.runtime.sendMessage({
-    action: "getState",
+
+const solveBtn = document.getElementById("solve-btn") as HTMLDivElement | null;
+if (solveBtn) {
+  solveBtn.addEventListener("click", async function () {
+    const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem")
+    if (problem) {
+      chrome.tabs.create({ url: problem.href });
+    }
   });
-
-  if (!state.problem) {
-    console.log("No problem found");
-    return;
-  }
-  const problemTitle = document.getElementById("question");
-  if (problemTitle) {
-    problemTitle.textContent = state.problem.text;
-  }
 }
 
-async function initUI() {
-  await setProblemText();
+const problemTitle = document.getElementById("question");
+if (problemTitle) {
+  const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem")
+  if (problem) {
+    problemTitle.textContent = problem.text;
+  }
 }
-
-initUI();

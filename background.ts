@@ -1,72 +1,24 @@
-import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
-import { getProblem, Problem } from "./problems.js";
+import { setRedirectRule } from "./redirect.js";
+import { Problem, getProblem } from "./problems.js";
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-    console.log("ON INSTALLED", reason);
-    if (reason === 'install') {
-      await syncProblem();
-      await synEnabledState();
-    }
-  });
-
-
-
-const state = {
-    problem: null as Problem | null,
-    enabled: true,
-};
-
-export type State = typeof state;
-
-chrome.storage.onChanged.addListener((changes, area) => {
-    console.log("ON CHANGED", changes, area);
-    if (area === "sync") {
-        if ("problem" in changes) {
-            state.problem = changes.problem.newValue;
-        }
-        if ("enabled" in changes) {
-            state.enabled = changes.enabled.newValue;
-            if (state.enabled) {
-              const problem = state.problem;
-              if (problem) {
-                setRedirectRule(problem.href);
-              } else {
-                console.log("No problem found");
-              }
-            } else {
-              unsetRedirectRule();
-            }
-        }
-    }
-});
-
-
-async function syncProblem() {
-    const { problem }: { problem?: Problem; } = await chrome.storage.sync.get("problem");
+  if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    console.log("Installing");
+    // Setup initial state with a problem and not disabled  by default
+    const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
     if (!problem) {
-        const problem = await getProblem();
-        await chrome.storage.sync.set({ problem });
-        state.problem = problem;
+      const newProblem = await getProblem();
+      await chrome.storage.sync.set({ problem: newProblem });
+      await setRedirectRule(newProblem.href);
+    }
+
+    const { disabled }: { disabled?: boolean } = await chrome.storage.sync.get("disabled");
+    if (disabled === undefined) {
+        await chrome.storage.sync.set({ disabled: false });
     } else {
-        state.problem = problem;
+        console.log("Disabled Already set", disabled);
     }
-}
-
-async function synEnabledState() {
-    const { enabled }: { enabled?: boolean } = await chrome.storage.sync.get("enabled");
-    if (enabled === undefined) {
-        await chrome.storage.sync.set({ enabled: true });
-        state.enabled = true;
-    } else {
-        state.enabled = !!enabled;
-    }
-}
-
-
-// Example: Sending data to popup
-chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
-    if (request.action === "getState") {
-      sendResponse({ state });
-    }
-  });
-
+  } else {
+    console.log("Updating");
+  }
+});

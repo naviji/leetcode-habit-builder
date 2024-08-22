@@ -23,6 +23,7 @@ export async function setRedirectRule(redirectUrl: string) {
 }
 
 export async function unsetRedirectRule() {
+  console.log("Calling set un redirect");
   await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [1],
   });
