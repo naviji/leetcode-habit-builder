@@ -6,7 +6,7 @@ export interface Problem {
   isPremium: boolean;
 }
 
-const url = "./problems/neetcode150.json"
+const url = "./problems/neetcode150.json";
 
 let problems: Problem[] = [];
 let isLoaded = false;
@@ -26,6 +26,6 @@ export async function getProblem() {
   if (!isLoaded) {
     await loadProblems();
   }
-  const newProblemIdx = Math.floor(Math.random() * problems.length);
-  return problems[newProblemIdx];
+  // const newProblemIdx = Math.floor(Math.random() * problems.length);
+  return problems[0]; // Remove once dev done;
 }

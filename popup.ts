@@ -1,7 +1,6 @@
 import { Problem } from "./problems";
 import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
 
-
 const settingsButton = document.getElementById("settings-icon");
 if (settingsButton) {
   const storedState = localStorage.getItem("settingsPageVisible");
@@ -34,7 +33,8 @@ const disableTorture = document.getElementById(
   "disable-torture-checkbox",
 ) as HTMLInputElement | null;
 if (disableTorture) {
-  const { disabled }: { disabled?: boolean } = await chrome.storage.sync.get("disabled")
+  const { disabled }: { disabled?: boolean } =
+    await chrome.storage.sync.get("disabled");
   if (disabled) {
     disableTorture.checked = disabled;
   }
@@ -44,7 +44,8 @@ if (disableTorture) {
     if (disableTorture.checked) {
       await unsetRedirectRule();
     } else {
-      const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
+      const { problem }: { problem?: Problem } =
+        await chrome.storage.sync.get("problem");
       if (problem) {
         await setRedirectRule(problem.href);
       } else {
@@ -54,11 +55,11 @@ if (disableTorture) {
   });
 }
 
-
 const solveBtn = document.getElementById("solve-btn") as HTMLDivElement | null;
 if (solveBtn) {
   solveBtn.addEventListener("click", async function () {
-    const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem")
+    const { problem }: { problem?: Problem } =
+      await chrome.storage.sync.get("problem");
     if (problem) {
       chrome.tabs.create({ url: problem.href });
     }
@@ -67,7 +68,8 @@ if (solveBtn) {
 
 const problemTitle = document.getElementById("question");
 if (problemTitle) {
-  const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem")
+  const { problem }: { problem?: Problem } =
+    await chrome.storage.sync.get("problem");
   if (problem) {
     problemTitle.textContent = problem.text;
   }

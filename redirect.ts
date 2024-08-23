@@ -20,10 +20,18 @@ export async function setRedirectRule(redirectUrl: string) {
     removeRuleIds: [1],
     addRules: [redirectRule],
   });
+  await chrome.scripting.unregisterContentScripts()
+  await chrome.scripting.registerContentScripts([
+    {
+      id: "1",
+      js: ["content.js"],
+      matches: [`${redirectUrl}*`],
+    }
+  ])
 }
 
 export async function unsetRedirectRule() {
-  console.log("Calling set un redirect");
+  await chrome.scripting.unregisterContentScripts()
   await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [1],
   });

@@ -31,6 +31,12 @@ check for reqeuests to submit url
 .onRequestComplete
 .executeScript to get the status text 
 . then call unregister.
+
+
+Whenever https://leetcode.com/problems/house-robber-ii/submissions/1364848449/
+Add a script which checks the value of <span data-e2e-locator="submission-result">Accepted</span>
+
+
 # References
 
 https://developer.chrome.com/docs/extensions/develop

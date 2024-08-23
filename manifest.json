@@ -23,13 +23,8 @@
     "webRequest",
     "tabs",
     "storage",
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
-  "host_permissions": ["<all_urls>"],
-  "content_scripts": [
-    {
-      "matches": ["https://leetcode.com/problems/*/submissions/*"],
-      "js": ["content.js"]
-    }
-  ]
+  "host_permissions": ["<all_urls>"]
 }
