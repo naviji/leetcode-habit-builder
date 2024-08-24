@@ -1,10 +1,12 @@
+console.log("content.js running");
+
 function checkForAcceptedSubmission() {
   const spanElement = document.querySelector(
     'span[data-e2e-locator="submission-result"]',
   );
   console.log("Span element:", spanElement);
   if (spanElement && spanElement.textContent === "Accepted") {
-    chrome.runtime.sendMessage({ result: "Accepted" });
+    chrome.runtime.sendMessage({ action: "stopRedirect" });
   }
 }
 

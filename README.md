@@ -37,6 +37,9 @@ Whenever https://leetcode.com/problems/house-robber-ii/submissions/1364848449/
 Add a script which checks the value of <span data-e2e-locator="submission-result">Accepted</span>
 
 
+
+# Known issues
+1. If you already solved the problem, clicking on submissions tab, and then clicking on a past submission will stop the redirection.
 # References
 
 https://developer.chrome.com/docs/extensions/develop

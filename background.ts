@@ -5,13 +5,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
     console.log("Installing");
     // Setup initial state with a problem and not disabled  by default
-    const { problem }: { problem?: Problem } =
-      await chrome.storage.sync.get("problem");
-    if (!problem) {
-      const newProblem = await getProblem();
-      await chrome.storage.sync.set({ problem: newProblem });
-      await setRedirectRule(newProblem.href);
-    }
+    await chooseProblemToSolve();
 
     const { disabled }: { disabled?: boolean } =
       await chrome.storage.sync.get("disabled");
@@ -25,11 +19,25 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((message) => {
-  if (message.result === "Accepted") {
+chrome.runtime.onMessage.addListener(async (message) => {
+  console.log("Message received:", message);
+  if (message.action === "stopRedirect") {
     unsetRedirectRule();
+  } else if (message.action === "startRedirect") {
+    await chooseProblemToSolve()
   } else {
     // Handle other messages or errors if necessary
     console.log("Unknown message received:", message);
   }
 });
+async function chooseProblemToSolve() {
+  const { problem }: { problem?: Problem; } = await chrome.storage.sync.get("problem");
+  if (!problem) {
+    const newProblem = await getProblem();
+    await chrome.storage.sync.set({ problem: newProblem });
+    await setRedirectRule(newProblem.href);
+  } else {
+    await setRedirectRule(problem.href);
+  }
+}
+

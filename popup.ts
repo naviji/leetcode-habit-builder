@@ -1,5 +1,4 @@
 import { Problem } from "./problems";
-import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
 
 const settingsButton = document.getElementById("settings-icon");
 if (settingsButton) {
@@ -42,15 +41,9 @@ if (disableTorture) {
   disableTorture.addEventListener("change", async function () {
     await chrome.storage.sync.set({ disabled: !!disableTorture.checked });
     if (disableTorture.checked) {
-      await unsetRedirectRule();
+      chrome.runtime.sendMessage({ action: "stopRedirect" });
     } else {
-      const { problem }: { problem?: Problem } =
-        await chrome.storage.sync.get("problem");
-      if (problem) {
-        await setRedirectRule(problem.href);
-      } else {
-        console.log("Error: No problem set");
-      }
+      chrome.runtime.sendMessage({ action: "startRedirect" });
     }
   });
 }
