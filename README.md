@@ -1,30 +1,27 @@
 # leetcode-habit-builder
 
 # TODO
-
-0. Sync chrome.storage instead of local storage
+1. Button Hover Effect on Solve button
 1. Indicator that the extension is active
-2. Redirect to intended page after completing problem
-3. Always detect completion
-4. Use requests that check if the redirect is happening to our problem url
-   if so, save the url somewhere to redirect once problem is submitted successfully
-5. Add build step to put it into a dist folder
-6. Replace @types/chrome with chrome-types
-7. Add duolingo like addiction streaks
+2. Show a congrats modal and +1 streak counter on successful problem submission
+7. Add streaks
 8. Add option to not show already solved problems
-9. Add option to show me problems I have completed but did badly at?
 10. Change the number of questions that I need to complete
-11. Try reproducing and fix: it also recognizes that I solved the question no matter from which section of the problem i solved it from (i.e. solving the question from leetcode.com/problem/discussion doesn't trigger the extension)
 12. Choose your own question mode
 13. Fix the question vs redirection mismatch
     The problem seems to be the midnight alarm, changing the problem state but not the ui?
 14. Add an exclusion list of websites
 15. Add a cache for async storage calls
 
+16. Make it work in old UI?
+
 15. Use this idea
 https://developer.chrome.com/docs/extensions/reference/api/storage#synchronous_response_to_storage_updates
 We can take this idea even further. In this example, we have an options page that allows the user to toggle a "debug mode" (implementation not shown here). The options page immediately saves the new settings to storage.sync, and the service worker uses storage.onChanged to apply the setting as soon as possible.
 
+16. Optional toggle to don't ask solved questions
+18. Script that takes problem links as input and gets the tag / name and difficulty from leetcode
+19. Optional timer mode. (What's the penalty though? Loose streak maybe?)
 
 
 check for reqeuests to submit url
