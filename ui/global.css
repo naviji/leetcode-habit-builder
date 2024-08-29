@@ -1,0 +1,50 @@
+@layer reset, global, modules;
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: unset;
+}
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+  img,
+  picture,
+  svg,
+  canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+} }
+@layer global {
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+  }
+}
+
+:root {
+  --main-bg: #0F1113;
+  --main-color: #F2F2F2;
+  --main-primary: #7a3f00;
+  --main-height: 352px;
+  --main-width: 400px;
+
+  --main-secondary: #333d42;
+
+  font-size: 1em;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-container--vertical {
+    display: flex;
+    flex-direction: column;
+}

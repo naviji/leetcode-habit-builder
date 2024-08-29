@@ -1,0 +1,45 @@
+   .button {
+    font-size: 1.2rem;
+    border: none;
+    background-color: var(--main-secondary);
+    color: var(--main-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0.8em 1.5em;
+    width: 8em;
+    --border-radius: 0.5em;
+    opacity: 0.5; /* Initial transparency */
+    transition: opacity 0.3s ease; /* Smooth transition effect */
+  }
+
+  .button:hover {
+    opacity: 1; /* Fully opaque on hover */
+  }
+
+  .button--left {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+  }
+
+  .button--left::before {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 -960 960 960' width='24px' fill='%23e8eaed'%3E%3Cpath d='M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z'/%3E%3C/svg%3E");
+    padding: 0 0.2em 0 0;
+  }
+
+  .button--right {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  }
+
+  .button--right::before {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 -960 960 960' width='24px' fill='%23e8eaed'%3E%3Cpath d='M380-334h200v-60H468l112-126v-54H380v60h114L380-386v52ZM480-80q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T120-440q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-800q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-440q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-80ZM224-866l56 56-170 170-56-56 170-170Zm512 0 170 170-56 56-170-170 56-56Z'/%3E%3C/svg%3E");
+    padding: 0 0.2em 0 0;
+  }
+
+  .button--center::before {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 -960 960 960' width='24px' fill='%23e8eaed'%3E%3Cpath d='M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z'/%3E%3C/svg%3E");
+    padding: 0 0.2em 0 0;
+  }
+
+  .button + .button {
+    margin-left: 0.1em;
+  }

@@ -1,0 +1,5 @@
+.congrats {
+    text-align: center;
+    background-color: var(--main-bg);
+    color: var(--main-color);
+}

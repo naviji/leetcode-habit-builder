@@ -1,0 +1,179 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="buttons.css" />
+    <link rel="stylesheet" href="streak.css" />
+    <link rel="stylesheet" href="progressBar.css" />
+    <link rel="stylesheet" href="question.css" />
+    <link rel="stylesheet" href="quoted.css" />
+    <link rel="stylesheet" href="congrats.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
+    <div class="flex-container">
+      <!-- https://stackoverflow.com/questions/19038799/why-is-there-an-unexplainable-gap-between-these-inline-block-div-elements -->
+      <button class="button button--left">Skip</button>
+      <button class="button button--right">Snooze</button>
+    </div>
+
+    <br />
+
+    <div class="settings settings--toggle">
+      <div class="settings__body">
+        <div>
+          <h4>Pause the grind</h4>
+          <p>Click to disable/enable redirects</p>
+        </div>
+        <div class="settings__body__action">
+          <input type="checkbox" />
+          <select>
+            <option value="all">All difficulties</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings__data">
+        <textarea></textarea>
+      </div>
+    </div>
+
+    <div class="settings settings--list">
+      <div class="settings__body">
+        <div>
+          <h4>Pause the grind</h4>
+          <p>Click to disable/enable redirects</p>
+        </div>
+        <div class="settings__body__action">
+          <input type="checkbox" />
+          <select>
+            <option value="all">All difficulties</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings__data">
+        <textarea></textarea>
+      </div>
+    </div>
+
+    <div class="settings settings--data">
+      <div class="settings__body">
+        <div>
+          <h4>Pause the grind</h4>
+          <p>Click to disable/enable redirects</p>
+        </div>
+        <div class="settings__body__action">
+          <input type="checkbox" />
+          <select>
+            <option value="all">All difficulties</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings__data">
+        <textarea></textarea>
+      </div>
+    </div>
+
+    
+    <br />
+    <div class="flex-container">
+      <div class="streak">
+        <span class="streak__count">110</span>
+        <span class="streak__label">days</span>
+      </div>
+      <div class="streak">
+        <span class="streak__count">1</span>
+        <span class="streak__label">days</span>
+      </div>
+    </div>
+    <br />
+
+    <div class="flex-container--vertical">
+      <div class="progressBar">
+        <span style="width: 0%"></span>
+      </div>
+      <br />
+      <div class="progressBar">
+        <span style="width: 25%"></span>
+      </div>
+      <br />
+      <div class="progressBar">
+        <span style="width: 50%"></span>
+      </div>
+      <br />
+      <div class="progressBar">
+        <span style="width: 100%"></span>
+      </div>
+    </div>
+    <br />
+    <div class="quoted">A LeetCode a day keeps unemployment away</div>
+    <br />
+
+    <div class="question question--easy">
+      <div class="question__count">
+        Question
+        <span class="question__count-current">1</span>
+        of
+        <span class="question__count-total">10</span>
+      </div>
+      <div class="question__title">
+        <a href="javascript:void(0)">Coin Change</a>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="question question--medium">
+      <div class="question__count">
+        Question
+        <span class="question__count-current">1</span>
+        of
+        <span class="question__count-total">10</span>
+      </div>
+      <div class="question__title">
+        <a href="javascript:void(0)">Coin Change</a>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="question question--hard">
+      <div class="question__count">
+        Question
+        <span class="question__count-current">1</span>
+        of
+        <span class="question__count-total">10</span>
+      </div>
+      <div class="question__title">
+        <a href="javascript:void(0)">Coin Change</a>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="congrats">
+      <h2>Congratulations!</h2>
+      <p>You've solved all the problems for today. Amazing job!</p>
+    </div>
+
+    <div class="header">
+      <h1>LeetCode Grind</h1>
+    </div>
+
+    <br />
+
+    <div class="header header--with-back">
+      <h1>Settings</h1>
+    </div>
+
+    <br />
+  </body>
+</html>

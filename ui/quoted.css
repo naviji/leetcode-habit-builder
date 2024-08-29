@@ -1,0 +1,15 @@
+.quoted {
+    text-align: center;
+    margin-top: 0.5em;
+    font-size: 1rem;
+    background: var(--main-bg);
+    color: var(--main-color);
+}
+
+.quoted::before{
+    content: open-quote;
+}
+
+.quoted::after{
+    content: close-quote;
+}

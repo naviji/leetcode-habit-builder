@@ -1,0 +1,43 @@
+
+
+ .question {
+    font-size: 1rem;
+    align-items: center;
+    color: var(--main-color);
+    background-color: var(--main-bg);
+    text-align: center;
+    --color-medium: #ffc01e;
+    --color-green: #00b8a3;
+    --color-red: #ff375f;
+    --color-medium: #ffc01e;
+}
+
+.question__count-current {
+    font-weight: bold;
+}
+
+.question__count-total {
+    font-weight: bold;
+}
+
+.question__title {
+    padding: 0.5em 0;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-decoration: underline;
+}
+
+.question__title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.question--easy .question__title {
+    color: var(--color-green)
+}
+.question--hard .question__title {
+    color: var(--color-red)
+}
+.question--medium .question__title {
+    color: var(--color-medium)
+}
