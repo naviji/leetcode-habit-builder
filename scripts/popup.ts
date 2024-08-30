@@ -4,6 +4,14 @@ const browser = {
     window.open(url, "_blank");
   }
 }
+
+// const browserReal = {
+//   openTab: (url: string) => {
+//     chrome.tabs.create({ url: url });
+//   }
+// }
+
+
 interface MyApi {
   skip(): void;
   snooze(): void;
@@ -12,6 +20,7 @@ interface MyApi {
   getTotalQuestionCount(): Promise<string>;
   getStreakCount(): Promise<string>;
   getCompletionPercentage(): Promise<string>;
+  getProblemUrl(): Promise<string>;
 }
 
 const myApi : MyApi= {
@@ -44,61 +53,20 @@ const myApi : MyApi= {
   getCompletionPercentage: async () => {
     const percentage = ((Number(await myApi.getCurrQuestionNumber()) / Number(await myApi.getTotalQuestionCount()))*100).toString()
     return percentage
+  },
+  getProblemUrl: async () => {
+      // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
+
+    return "https://leetcode.com/problems/two-sum/"
   }
 }
-
-console.log("Script loaded and myApi defined:", myApi);
-
 
 window.myApi = myApi;
 
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Retrieve the last visible page
-  const settingsPage = document.querySelector(".page__settings");
-  if (settingsPage) {
-    // Retrieve the state from localStorage
-    const isOpen = localStorage.getItem("settingsPageOpen") === 'true';
 
-    // Set the initial state based on localStorage
-    if (isOpen) {
-      settingsPage.classList.add("isOpen");
-    } else {
-      settingsPage.classList.remove("isOpen");
-    }
-  }
 
-  // Set the daily quote
-  const quoted: HTMLDivElement | null = document.querySelector(".quoted");
-  if (quoted) {
-    quoted.innerText = await myApi.getDailyQuote();
-  }
-
-  // Set current question number
-  const questionCount: HTMLSpanElement | null = document.querySelector(".question__count-current");
-  if (questionCount) {
-    questionCount.innerText = await myApi.getCurrQuestionNumber()
-  }
-
-  // Set total question count
-  const questionTotal: HTMLSpanElement | null = document.querySelector(".question__count-total");
-  if (questionTotal) {
-    questionTotal.innerText = await myApi.getTotalQuestionCount()
-  }
-
-  // Set streak count
-  const streakCount: HTMLSpanElement | null = document.querySelector(".streak__count");
-  if (streakCount) {
-    streakCount.innerText = await myApi.getStreakCount()
-  }
-
-  // Set progress bar width
-  const progressBar: HTMLDivElement | null = document.querySelector(".progressBar__progress");
-  if (progressBar) {
-    progressBar.style.width = `${await myApi.getCompletionPercentage()}%`
-  }
-
-})
+document.addEventListener('DOMContentLoaded', render)
 
 const toggleSettings = () => {
   const settingsPage = document.querySelector(".page__settings");
@@ -118,18 +86,9 @@ settingsButton?.addEventListener("click", toggleSettings)
 const backButton = document.querySelector(".header__icon_left");
 backButton?.addEventListener("click", toggleSettings)
 
-
-// const browserReal = {
-//   openTab: (url: string) => {
-//     chrome.tabs.create({ url: url });
-//   }
-// }
-
 const questionLink = document.querySelector(".question__link");
 questionLink?.addEventListener("click", async () => {
-  console.log("Clicked")
-  // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
-  const problemUrl ="https://leetcode.com/problems/two-sum/"
+  const problemUrl = await myApi.getProblemUrl();
   browser.openTab(problemUrl);
 })
 
@@ -138,6 +97,9 @@ skipButton?.addEventListener('click', myApi.skip)
 
 const snoozeButton = document.querySelector('.buttons__button--right')
 snoozeButton?.addEventListener('click', myApi.snooze)
+
+// Add event handlers for settings
+
 
 
 
@@ -173,3 +135,50 @@ snoozeButton?.addEventListener('click', myApi.snooze)
 // }
 
 export { myApi }
+
+async function render(): Promise<void> {
+    // Retrieve the last visible page
+    const settingsPage = document.querySelector(".page__settings");
+    if (settingsPage) {
+      // Retrieve the state from localStorage
+      const isOpen = localStorage.getItem("settingsPageOpen") === 'true';
+
+      // Set the initial state based on localStorage
+      if (isOpen) {
+        settingsPage.classList.add("isOpen");
+      } else {
+        settingsPage.classList.remove("isOpen");
+      }
+    }
+
+    // Set the daily quote
+    const quoted: HTMLDivElement | null = document.querySelector(".quoted");
+    if (quoted) {
+      quoted.innerText = await myApi.getDailyQuote();
+    }
+
+    // Set current question number
+    const questionCount: HTMLSpanElement | null = document.querySelector(".question__count-current");
+    if (questionCount) {
+      questionCount.innerText = await myApi.getCurrQuestionNumber();
+    }
+
+    // Set total question count
+    const questionTotal: HTMLSpanElement | null = document.querySelector(".question__count-total");
+    if (questionTotal) {
+      questionTotal.innerText = await myApi.getTotalQuestionCount();
+    }
+
+    // Set streak count
+    const streakCount: HTMLSpanElement | null = document.querySelector(".streak__count");
+    if (streakCount) {
+      streakCount.innerText = await myApi.getStreakCount();
+    }
+
+    // Set progress bar width
+    const progressBar: HTMLDivElement | null = document.querySelector(".progressBar__progress");
+    if (progressBar) {
+      progressBar.style.width = `${await myApi.getCompletionPercentage()}%`;
+    }
+
+}
