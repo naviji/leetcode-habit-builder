@@ -43,7 +43,7 @@
 
   }
   
-  .page__settings.isVisible {
+  .page__settings.isOpen {
     left: 0;
   }
   
