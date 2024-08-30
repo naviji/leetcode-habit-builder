@@ -1,5 +1,5 @@
-import { setRedirectRule, unsetRedirectRule } from "./redirect.js";
-import { Problem, getProblem } from "./problems.js";
+import { setRedirectRule, unsetRedirectRule } from "./redirect.js"
+import { Problem, getProblem } from "./problems.js"
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   if (reason === chrome.runtime.OnInstalledReason.INSTALL) {

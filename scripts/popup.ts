@@ -1,4 +1,4 @@
-import { Problem } from "./problems";
+import { Problem } from "./problems.js";
 
 const settingsButton = document.getElementById("settings-icon");
 if (settingsButton) {

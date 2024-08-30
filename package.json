@@ -4,10 +4,8 @@
   "version": "1.0.0",
   "main": "popup.js",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "build": "npm run clean && tsc --outDir ./dist && mkdir -p dist/images dist/problems && cp -r images/ dist/images && cp -r problems/ dist/problems && cp manifest.json dist/ && cp popup.html dist/ && cp popup.css dist/",
-    "watch": "tsc --outDir ./dist --watch",
-    "clean": "rm -rf dist && mkdir dist"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "repository": {
     "type": "git",
