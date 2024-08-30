@@ -41,3 +41,5 @@ Add a script which checks the value of <span data-e2e-locator="submission-result
 
 https://developer.chrome.com/docs/extensions/develop
 https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+
+https://github.com/haoel/leetcode
