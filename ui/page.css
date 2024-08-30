@@ -1,0 +1,17 @@
+.page {
+    width: var(--main-width);
+    height: var(--main-height);
+    background-color: var(--main-bg);
+    font-size: 1rem;
+}
+
+.page__home > .quoted {
+    margin-top: 0.8em;
+    margin-bottom: 2em;
+}
+
+
+.page__home > .buttons {
+    margin-top: 0.5em;
+    margin-bottom: 2em;
+}
