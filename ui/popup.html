@@ -60,56 +60,56 @@
         </div>
 
         <div class="page__settings__body">
-          <div class="settings settings--toggle">
+          <div class="settings settings--toggle" id="pause-the-grind">
             <div class="settings__body">
               <div>
                 <h4>Pause the grind</h4>
                 <p>Click to disable/enable redirects</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
+                <input type="checkbox" id="pause-toggle" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--list">
+        
+          <div class="settings settings--list" id="problem-sets">
             <div class="settings__body">
               <div>
                 <h4>Problem sets</h4>
                 <p>Choose the leetcode problems you'd like</p>
               </div>
               <div class="settings__body__action">
-                <select>
+                <select id="problem-set-select">
                   <option value="neetcode150">Neetcode 150</option>
                   <option value="custom">Custom</option>
                 </select>
               </div>
             </div>
             <div class="settings__data">
-              <textarea></textarea>
+              <textarea id="problem-sets-textarea"></textarea>
             </div>
           </div>
-
-          <div class="settings settings--number">
+        
+          <div class="settings settings--number" id="problems-per-day">
             <div class="settings__body">
               <div>
                 <h4>Problems per day</h4>
                 <p>Choose the number of daily problems</p>
               </div>
               <div class="settings__body__action">
-                <input min="1" value="1" type="number" />
+                <input min="1" value="1" type="number" id="problems-per-day-input" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--list">
+        
+          <div class="settings settings--list" id="problem-difficulty">
             <div class="settings__body">
               <div>
                 <h4>Problem difficulty</h4>
                 <p>Choose the difficulty you'd like</p>
               </div>
               <div class="settings__body__action">
-                <select>
+                <select id="problem-difficulty-select">
                   <option value="all">All difficulties</option>
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
@@ -118,73 +118,73 @@
               </div>
             </div>
           </div>
-
-          <div class="settings settings--list">
+        
+          <div class="settings settings--list" id="problem-topics">
             <div class="settings__body">
               <div>
                 <h4>Problem topics</h4>
                 <p>Choose the topics you'd like</p>
               </div>
               <div class="settings__body__action">
-                <select>
+                <select id="problem-topics-select">
                   <option value="all">All topics</option>
                 </select>
               </div>
             </div>
             <div class="settings__data">
-              <textarea></textarea>
+              <textarea id="problem-topics-textarea"></textarea>
             </div>
           </div>
-
-          <div class="settings settings--toggle">
+        
+          <div class="settings settings--toggle" id="include-solved-problems">
             <div class="settings__body">
               <div>
                 <h4>Include solved problems</h4>
                 <p>Toggle whether to ask solved problems</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
+                <input type="checkbox" id="include-solved-problems-toggle" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--toggle">
+        
+          <div class="settings settings--toggle" id="include-premium-problems">
             <div class="settings__body">
               <div>
                 <h4>Include premium problems</h4>
                 <p>Toggle whether to ask premium problems</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
+                <input type="checkbox" id="include-premium-problems-toggle" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--number">
+        
+          <div class="settings settings--number" id="snooze-interval">
             <div class="settings__body">
               <div>
                 <h4>Snooze interval</h4>
                 <p>Choose the snooze time in minutes</p>
               </div>
               <div class="settings__body__action">
-                <input min="0" value="30" type="number" />
+                <input min="0" value="30" type="number" id="snooze-interval-input" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--number">
+        
+          <div class="settings settings--number" id="rest-interval">
             <div class="settings__body">
               <div>
                 <h4>Rest interval</h4>
                 <p>Choose the rest time between problems in minutes</p>
               </div>
               <div class="settings__body__action">
-                <input min="0" value="30" type="number" />
+                <input min="0" value="30" type="number" id="rest-interval-input" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--data">
+        
+          <div class="settings settings--data" id="whitelisted-urls">
             <div class="settings__body">
               <div>
                 <h4>Whitelisted URLs</h4>
@@ -194,37 +194,36 @@
             </div>
             <div class="settings__data">
               <textarea
+                id="whitelisted-urls-textarea"
                 placeholder="www.leetcode.com
-www.google.com"
+        www.google.com"
               ></textarea>
             </div>
           </div>
-
-          <div class="settings settings--toggle">
+        
+          <div class="settings settings--toggle" id="redirect-on-success">
             <div class="settings__body">
               <div>
                 <h4>Redirect on success</h4>
                 <p>Toggle whether to redirect back on submission</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
+                <input type="checkbox" id="redirect-on-success-toggle" />
               </div>
             </div>
           </div>
-
-          <div class="settings settings--toggle">
+        
+          <div class="settings settings--toggle" id="show-daily-quote">
             <div class="settings__body">
               <div>
                 <h4>Show daily quote</h4>
                 <p>Toggle whether to show quotes</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
+                <input type="checkbox" id="show-daily-quote-toggle" />
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
