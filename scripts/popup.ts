@@ -1,4 +1,3 @@
-import { Problem } from "./problems.js";
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,32 +34,44 @@ settingsButton?.addEventListener("click", toggleSettings)
 const backButton = document.querySelector(".header__icon_left");
 backButton?.addEventListener("click", toggleSettings)
 
-// if (settingsButton) {
-//   const storedState = localStorage.getItem("settingsPageVisible");
-//   const settingsPage = document.getElementById("settings-page");
-//   if (storedState === "true" && settingsPage) {
-//     settingsPage.classList.add("visible");
+
+const browser = {
+  openTab: (url: string) => {
+    window.open(url, "_blank");
+  }
+}
+
+const problem = {
+  skip: () => {
+    // chrome.runtime.sendMessage({ action: "skipQuestion" });
+    console.log("Skipped")
+  },
+  snooze: () => {
+    // chrome.runtime.sendMessage({ action: "snoozeQuestion" });
+    console.log("Snoozed")
+  }
+}
+
+// const browserReal = {
+//   openTab: (url: string) => {
+//     chrome.tabs.create({ url: url });
 //   }
-
-//   settingsButton.addEventListener("click", function () {
-//     localStorage.setItem("settingsPageVisible", "true");
-//     const settingsPage = document.getElementById("settings-page");
-//     if (settingsPage) {
-//       settingsPage.classList.toggle("visible");
-//     }
-//   });
 // }
 
-// const backArrow = document.getElementById("arrow-icon");
-// if (backArrow) {
-//   backArrow.addEventListener("click", function () {
-//     localStorage.setItem("settingsPageVisible", "false");
-//     const settingsPage = document.getElementById("settings-page");
-//     if (settingsPage) {
-//       settingsPage.classList.toggle("visible");
-//     }
-//   });
-// }
+const questionLink = document.querySelector(".question__link");
+questionLink?.addEventListener("click", async () => {
+  console.log("Clicked")
+  // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
+  const problemUrl ="https://leetcode.com/problems/two-sum/"
+  browser.openTab(problemUrl);
+})
+
+const skipButton = document.querySelector('.buttons__button--left')
+skipButton?.addEventListener('click', problem.skip)
+
+const snoozeButton = document.querySelector('.buttons__button--right')
+snoozeButton?.addEventListener('click', problem.snooze)
+
 
 // const disableTorture = document.getElementById(
 //   "disable-torture-checkbox",
@@ -82,16 +93,7 @@ backButton?.addEventListener("click", toggleSettings)
 //   });
 // }
 
-// const solveBtn = document.getElementById("solve-btn") as HTMLDivElement | null;
-// if (solveBtn) {
-//   solveBtn.addEventListener("click", async function () {
-//     const { problem }: { problem?: Problem } =
-//       await chrome.storage.sync.get("problem");
-//     if (problem) {
-//       chrome.tabs.create({ url: problem.href });
-//     }
-//   });
-// }
+
 
 // const problemTitle = document.getElementById("question");
 // if (problemTitle) {
