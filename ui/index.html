@@ -66,32 +66,20 @@
               </div>
               <div class="settings__body__action">
                 <input type="checkbox" />
-                <select>
-                  <option value="all">All difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
               </div>
-            </div>
-            <div class="settings__data">
-              <textarea></textarea>
             </div>
           </div>
 
           <div class="settings settings--list">
             <div class="settings__body">
               <div>
-                <h4>Pause the grind</h4>
-                <p>Click to disable/enable redirects</p>
+                <h4>Problem sets</h4>
+                <p>Choose the leetcode problems you'd like</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
                 <select>
-                  <option value="all">All difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
+                  <option value="neetcode150">Neetcode 150</option>
+                  <option value="custom">Custom</option>
                 </select>
               </div>
             </div>
@@ -100,19 +88,44 @@
             </div>
           </div>
 
-          <div class="settings settings--data">
+          <div class="settings settings--number">
             <div class="settings__body">
               <div>
-                <h4>Pause the grind</h4>
-                <p>Click to disable/enable redirects</p>
+                <h4>Problems per day</h4>
+                <p>Choose the number of daily problems</p>
               </div>
               <div class="settings__body__action">
-                <input type="checkbox" />
+                <input min="1" value="1" type="number" />
+              </div>
+            </div>
+          </div>
+
+          <div class="settings settings--list">
+            <div class="settings__body">
+              <div>
+                <h4>Problem difficulty</h4>
+                <p>Choose the difficulty you'd like</p>
+              </div>
+              <div class="settings__body__action">
                 <select>
                   <option value="all">All difficulties</option>
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
                   <option value="hard">Hard</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings settings--list">
+            <div class="settings__body">
+              <div>
+                <h4>Problem topics</h4>
+                <p>Choose the topics you'd like</p>
+              </div>
+              <div class="settings__body__action">
+                <select>
+                  <option value="all">All topics</option>
                 </select>
               </div>
             </div>
@@ -124,65 +137,92 @@
           <div class="settings settings--toggle">
             <div class="settings__body">
               <div>
-                <h4>Pause the grind</h4>
-                <p>Click to disable/enable redirects</p>
+                <h4>Include solved problems</h4>
+                <p>Toggle whether to ask solved problems</p>
               </div>
               <div class="settings__body__action">
                 <input type="checkbox" />
-                <select>
-                  <option value="all">All difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
               </div>
-            </div>
-            <div class="settings__data">
-              <textarea></textarea>
             </div>
           </div>
 
-          <div class="settings settings--list">
+          <div class="settings settings--toggle">
             <div class="settings__body">
               <div>
-                <h4>Pause the grind</h4>
-                <p>Click to disable/enable redirects</p>
+                <h4>Include premium problems</h4>
+                <p>Toggle whether to ask premium problems</p>
               </div>
               <div class="settings__body__action">
                 <input type="checkbox" />
-                <select>
-                  <option value="all">All difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
               </div>
             </div>
-            <div class="settings__data">
-              <textarea></textarea>
+          </div>
+
+          <div class="settings settings--number">
+            <div class="settings__body">
+              <div>
+                <h4>Snooze interval</h4>
+                <p>Choose the snooze time in minutes</p>
+              </div>
+              <div class="settings__body__action">
+                <input min="0" value="30" type="number" />
+              </div>
+            </div>
+          </div>
+
+          <div class="settings settings--number">
+            <div class="settings__body">
+              <div>
+                <h4>Rest interval</h4>
+                <p>Choose the rest time between problems in minutes</p>
+              </div>
+              <div class="settings__body__action">
+                <input min="0" value="30" type="number" />
+              </div>
             </div>
           </div>
 
           <div class="settings settings--data">
             <div class="settings__body">
               <div>
-                <h4>Pause the grind</h4>
-                <p>Click to disable/enable redirects</p>
+                <h4>Whitelisted URLs</h4>
+                <p>Choose the websites you always want to allow</p>
+              </div>
+              <div class="settings__body__action"></div>
+            </div>
+            <div class="settings__data">
+              <textarea
+                placeholder="www.leetcode.com
+www.google.com"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="settings settings--toggle">
+            <div class="settings__body">
+              <div>
+                <h4>Redirect on success</h4>
+                <p>Toggle whether to redirect back on submission</p>
               </div>
               <div class="settings__body__action">
                 <input type="checkbox" />
-                <select>
-                  <option value="all">All difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
               </div>
             </div>
-            <div class="settings__data">
-              <textarea></textarea>
+          </div>
+
+          <div class="settings settings--toggle">
+            <div class="settings__body">
+              <div>
+                <h4>Show daily quote</h4>
+                <p>Toggle whether to show quotes</p>
+              </div>
+              <div class="settings__body__action">
+                <input type="checkbox" />
+              </div>
             </div>
           </div>
+
+
         </div>
       </div>
     </div>

@@ -39,10 +39,17 @@
     border-radius: 0.5em;
     margin: 0.2em 0 0 0;
     display: none;
+    resize: vertical;
 }
 
-.settings--toggle input {
+.settings--toggle input[type="checkbox"] {
     display: block;
+    transform: scale(1.5);
+}
+
+.settings--number input[type="number"] {
+    display: block;
+    width: 2.5em;
 }
 
 .settings--list select {
@@ -51,6 +58,10 @@
 
 .settings--data textarea {
     display: block;
+}
+
+.settings--data textarea::placeholder{
+    /* white-space: pre-wrap; */
 }
 
 .settings + .settings {
