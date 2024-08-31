@@ -1,6 +1,6 @@
-import { QuestionBankEnum, Question } from "../types/questions.js";
+import { QuestionBankEnum, Question, Questions } from "../types/questions.js";
 import { StorageEngine } from "../types/storageEngine.js";
-import { questions, questionInfo } from "./data.js";
+import { questions } from "./data.js";
 import { Navigator } from "../types/navigator.js";
 import { App } from "../types/app.js";
 
@@ -20,6 +20,7 @@ export class Application implements App {
   private redirectOnSuccess: boolean;
   private showDailyQuote: boolean;
   private selectedTopic: string | null;
+  private questionInfo: Questions | null = null;
 
   private nv: Navigator | null = null;
   private renderFn = () => { };
@@ -43,8 +44,7 @@ export class Application implements App {
   }
 
   async init(): Promise<void> {
-
-    console.log("Initializing...");
+    this.loadProblemInfo()
     const currentState = await this.db.get();
     this.problems = currentState.problems || null;
     this.problemSet = currentState.problemSet || QuestionBankEnum.NeetCode150;
@@ -76,7 +76,12 @@ export class Application implements App {
       this.setProblemSet(this.problemSet);
     }
 
+
     this.renderFn();
+  }
+
+  private async loadProblemInfo(): Promise<void> {
+    this.questionInfo = await (await fetch("../data/leetcode.json")).json();
   }
 
   async getProblemSet(): Promise<QuestionBankEnum> {
@@ -197,6 +202,10 @@ export class Application implements App {
   }
 
   private async chooseProblems() {
+    if (!this.questionInfo) {
+      throw new Error("No question info");
+    }
+    const questionInfo = this.questionInfo as Questions;
     const questionsInSet = questions[this.problemSet];
     this.allProblems = questionsInSet.map(
       (problemSlug) => questionInfo[problemSlug].data.question

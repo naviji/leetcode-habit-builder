@@ -1,6 +1,6 @@
 import { QuestionBankEnum } from "../types/questions.js";
 import browserNavigator from "./browserNavigator.js";
-import localStorageEngine from "./localStorageEngine.js";
+import LocalStorageEngine from "./localStorageEngine.js"
 import { Application } from "./app.js";
 
 
@@ -308,5 +308,5 @@ export async function render(): Promise<void> {
 
 }
 
-export const app = new Application(browserNavigator, localStorageEngine, render);
+export const app = new Application(browserNavigator, new LocalStorageEngine(), render);
 window.myApi = app;

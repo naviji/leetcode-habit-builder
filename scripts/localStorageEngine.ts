@@ -22,4 +22,4 @@ class LocalStorageEngine implements StorageEngine {
     }
 }
 
-export default new LocalStorageEngine()
+export default LocalStorageEngine
