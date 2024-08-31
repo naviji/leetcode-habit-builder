@@ -1,60 +1,11 @@
 import { questions, questionInfo } from "./data.js";
+import { Question, QuestionBankEnum } from "../types/questions.js"
+
 const browser = {
   openTab: (url: string) => {
     window.open(url, "_blank");
   },
 };
-
-
-enum QuestionBankEnum {
-  NeetCodeAll = "neetcodeAll",
-  NeetCode150 = "neetcode150",
-  Blind75 = "blind75",
-  StriverSDESheet = "striverSDESheet",
-  StriverAtoZ = "striverAtoZ",
-  Striver79 = "striver79",
-}
-interface QuestionBank {
-  [QuestionBankEnum.NeetCodeAll]: string[],
-  [QuestionBankEnum.NeetCode150]: string[],
-  [QuestionBankEnum.Blind75]: string[],
-  [QuestionBankEnum.StriverSDESheet]: string[],
-  [QuestionBankEnum.StriverAtoZ]: string[],
-  [QuestionBankEnum.Striver79]: string[],
-}
-
-
-interface TopicTag {
-  name: string;
-  id: string;
-  slug: string;
-}
-
-interface Question {
-  acRate: number;
-  difficulty: string;
-  freqBar: number | null;
-  questionFrontendId: string;
-  isFavor: boolean;
-  isPaidOnly: boolean;
-  status: string | null;
-  title: string;
-  titleSlug: string;
-  topicTags: TopicTag[];
-  hasSolution: boolean;
-  hasVideoSolution: boolean;
-}
-
-interface QuestionData {
-  question: Question;
-}
-
-interface Questions {
-  [key: string]: {
-    data: QuestionData;
-  };
-}
-
 
 // const browserReal = {
 //   openTab: (url: string) => {
@@ -62,11 +13,14 @@ interface Questions {
 //   }
 // }
 
+
+
 interface MyApi {
-  problem: Question | null,
+  // problem: Question | null,
   skip(): void;
   snooze(): void;
-  chooseProblemList(list: QuestionBankEnum): void;
+  chooseProblemList(list: QuestionBankEnum): Promise<void>;
+  setProblemsPerDay(value: string): void;
 
   enableRedirects(): void;
   disableRedirects(): void;
@@ -85,18 +39,55 @@ interface MyApi {
 
 class myApi implements MyApi {
 
-  problem: Question| null = null
+  private problem: Question| null = null
+  private problemsPerDay = 1
+  private problemDifficulty: "easy" | "medium" | "hard" | null = null
+  private allProblems: Question[] = []
+  private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150
+
   render() {
     render()
   }
 
-  chooseProblemList (problemSet: QuestionBankEnum) {
-    const questionsInSet = questions[problemSet];
-    const randomIndex = Math.floor(Math.random() * questionsInSet.length);
-    const problemSlug = questionsInSet[randomIndex];
-    console.log("Selected question data:", questionInfo[problemSlug]);
-    this.problem = questionInfo[problemSlug].data.question;
+  async setProblemsPerDay (value: string) {
+    this.problemsPerDay = Number(value)
     this.render()
+  }
+
+  async setProblemDifficulty (difficulty: string) {
+    if (difficulty === "easy" || difficulty === "medium" || difficulty === "hard") {
+      this.problemDifficulty = difficulty
+      await this.chooseProblems()
+    } else {
+      throw new Error("Invalid difficulty")
+    }
+    // Add render
+  }
+
+  private async chooseProblems() {
+    console.log("Choosing problems", this.problemSet, this.problemsPerDay, this.problemDifficulty)
+    const questionsInSet = questions[this.problemSet];
+    this.allProblems = questionsInSet.map(problemSlug => questionInfo[problemSlug].data.question)
+
+    function capitalizeFirstCharacter(s: string) {
+      if (!s) return ''; // Check if the string is empty
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    if (this.problemDifficulty) {
+      const difficulty = capitalizeFirstCharacter(this.problemDifficulty)  
+      this.allProblems = this.allProblems.filter(problem => problem.difficulty === difficulty)
+    }
+    const randomIndex = Math.floor(Math.random() * this.allProblems.length);
+    this.problem = this.allProblems[randomIndex];
+    console.log("Selected question data:", this.problem)
+    this.render()
+  }
+
+  async chooseProblemList (problemSet: QuestionBankEnum) {
+    this.problemSet = problemSet
+    await this.chooseProblems()
+
   }
 
   skip () {
@@ -210,21 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // }
 
 function addSettingsEventHandlers() {
-  const pauseToggleInput = document.getElementById(
-    "pause-toggle",
-  ) as HTMLInputElement;
 
-  const problemSetSelect = document.getElementById(
-    "problem-set-select",
-  ) as HTMLSelectElement;
 
-  const problemsPerDayInput = document.getElementById(
-    "problems-per-day-input",
-  ) as HTMLInputElement;
 
-  const problemDifficultySelect = document.getElementById(
-    "problem-difficulty-select",
-  ) as HTMLSelectElement;
+
+
 
   const problemTopicsSelect = document.getElementById(
     "problem-topics-select",
@@ -273,6 +254,10 @@ function addSettingsEventHandlers() {
     "show-daily-quote-toggle",
   ) as HTMLInputElement;
 
+  // Toggle ON / OFF
+  const pauseToggleInput = document.getElementById(
+    "pause-toggle",
+  ) as HTMLInputElement;
   pauseToggleInput.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
     console.log("Pause toggle changed:", target.checked);
@@ -284,6 +269,10 @@ function addSettingsEventHandlers() {
   });
 
   // Problem sets
+  const problemSetSelect = document.getElementById(
+    "problem-set-select",
+  ) as HTMLSelectElement;
+
   problemSetSelect.addEventListener("change", (event) => {
   const target = event.target as HTMLSelectElement;
   const problemSet = target.value as QuestionBankEnum;
@@ -291,14 +280,22 @@ function addSettingsEventHandlers() {
   });
 
   // Problems per day
+  const problemsPerDayInput = document.getElementById(
+    "problems-per-day-input",
+  ) as HTMLInputElement;
   problemsPerDayInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
+    api.setProblemsPerDay(target.value)
     console.log("Problems per day input changed:", target.value);
   });
 
   // Problem difficulty
+  const problemDifficultySelect = document.getElementById(
+    "problem-difficulty-select",
+  ) as HTMLSelectElement;
   problemDifficultySelect.addEventListener("change", (event) => {
     const target = event.target as HTMLSelectElement;
+    api.setProblemDifficulty(target.value)
     console.log("Problem difficulty selected:", target.value);
   });
 

@@ -1,4 +1,4 @@
-
+import { QuestionBank, Questions } from "../types/questions.js";
 
 export const questions: QuestionBank = {
     "neetcodeAll": [
