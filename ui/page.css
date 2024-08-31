@@ -11,8 +11,13 @@
 
 .page__home > .quoted {
     margin-top: 0.8em;
-    margin-bottom: 2em;
+    /* margin-bottom: 2em; */
 }
+
+.page__home > .question {
+    margin-top: 2em;
+}
+
 
 
 .page__home > .buttons {

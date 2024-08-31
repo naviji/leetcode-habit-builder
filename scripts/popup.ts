@@ -1,5 +1,5 @@
 import { questions, questionInfo } from "./data.js";
-import { Question, QuestionBankEnum } from "../types/questions.js"
+import { Question, QuestionBankEnum } from "../types/questions.js";
 
 const browser = {
   openTab: (url: string) => {
@@ -12,8 +12,6 @@ const browser = {
 //     chrome.tabs.create({ url: url });
 //   }
 // }
-
-
 
 interface MyApi {
   // problem: Question | null,
@@ -47,178 +45,190 @@ interface MyApi {
   getShowDailyQuote(): Promise<boolean>;
 
   render(): void;
-  
 }
 
 class myApi implements MyApi {
-
-  private problem: Question| null = null
-  private problemsPerDay = 1
-  private problemDifficulty: "easy" | "medium" | "hard" | null = null
-  private problemTopics: string[] | null = null
-  private allProblems: Question[] = []
-  private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150
-  private includePremiumProblems : boolean = false
-  private snoozeInterval: number = 38
-  private restInterval: number = 29
-  private whitelistedUrls: string = ""
-  private redirectOnSuccess: boolean = false
-  private showDailyQuote: boolean = false
+  private problem: Question | null = null;
+  private problemsPerDay = 1;
+  private problemDifficulty: "easy" | "medium" | "hard" | null = null;
+  private problemTopics: string[] | null = null;
+  private allProblems: Question[] = [];
+  private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150;
+  private includePremiumProblems: boolean = false;
+  private snoozeInterval: number = 38;
+  private restInterval: number = 29;
+  private whitelistedUrls: string = "";
+  private redirectOnSuccess: boolean = false;
+  private showDailyQuote: boolean = true;
 
   async setRedirectOnSuccess(value: boolean): Promise<void> {
-    this.redirectOnSuccess = value
+    this.redirectOnSuccess = value;
   }
 
   async getRedirectOnSuccess(): Promise<boolean> {
-    return this.redirectOnSuccess
+    return this.redirectOnSuccess;
   }
 
   async setShowDailyQuote(value: boolean): Promise<void> {
-    this.showDailyQuote = value
+    this.showDailyQuote = value;
   }
 
   async getShowDailyQuote(): Promise<boolean> {
-    return this.showDailyQuote
+    return this.showDailyQuote;
   }
 
   render() {
-    render()
+    render();
   }
 
-  async getIncludePremiumProblems () {
-    return this.includePremiumProblems
+  async getIncludePremiumProblems() {
+    return this.includePremiumProblems;
   }
 
   async setWhitelistedUrls(value: string): Promise<void> {
-    this.whitelistedUrls = value
+    this.whitelistedUrls = value;
   }
 
   async getWhitelistedUrls(): Promise<string> {
-    return this.whitelistedUrls
+    return this.whitelistedUrls;
   }
 
-  async setSnoozeInterval (value: string) {
-    const interval = Number(value)
+  async setSnoozeInterval(value: string) {
+    const interval = Number(value);
     if (interval < 0) {
-      console.log("Error: Invalid interval")
+      console.log("Error: Invalid interval");
     } else {
-      this.snoozeInterval = Number(value)
+      this.snoozeInterval = Number(value);
     }
   }
 
-  async getSnoozeInterval () {
-    return this.snoozeInterval.toString()
+  async getSnoozeInterval() {
+    return this.snoozeInterval.toString();
   }
 
-  async setRestInterval (value: string) {
-    const interval = Number(value)
+  async setRestInterval(value: string) {
+    const interval = Number(value);
     if (interval < 0) {
-      console.log("Error: Invalid interval")
+      console.log("Error: Invalid interval");
     } else {
-      this.restInterval = Number(value)
+      this.restInterval = Number(value);
     }
   }
 
-  async getRestInterval () {
-    return this.restInterval.toString()
+  async getRestInterval() {
+    return this.restInterval.toString();
   }
 
-  async setIncludePremiumProblems (value: boolean) {
-    this.includePremiumProblems = value
-    await this.chooseProblems()
+  async setIncludePremiumProblems(value: boolean) {
+    this.includePremiumProblems = value;
+    await this.chooseProblems();
   }
 
-  async setProblemsPerDay (value: string) {
-    this.problemsPerDay = Number(value)
-    this.render()
+  async setProblemsPerDay(value: string) {
+    this.problemsPerDay = Number(value);
+    this.render();
   }
 
-  async setProblemDifficulty (difficulty: string) {
-    if (difficulty === "easy" || difficulty === "medium" || difficulty === "hard") {
-      this.problemDifficulty = difficulty
-      await this.chooseProblems()
+  async setProblemDifficulty(difficulty: string) {
+    if (
+      difficulty === "easy" ||
+      difficulty === "medium" ||
+      difficulty === "hard"
+    ) {
+      this.problemDifficulty = difficulty;
+      await this.chooseProblems();
     } else {
-      throw new Error("Invalid difficulty")
+      throw new Error("Invalid difficulty");
     }
     // Add render
   }
 
   private async chooseProblems() {
-    console.log("Choosing problems", this.problemSet, this.problemsPerDay, this.problemDifficulty)
+    console.log(
+      "Choosing problems",
+      this.problemSet,
+      this.problemsPerDay,
+      this.problemDifficulty,
+    );
     const questionsInSet = questions[this.problemSet];
-    this.allProblems = questionsInSet.map(problemSlug => questionInfo[problemSlug].data.question)
+    this.allProblems = questionsInSet.map(
+      (problemSlug) => questionInfo[problemSlug].data.question,
+    );
 
     function capitalizeFirstCharacter(s: string) {
-      if (!s) return ''; // Check if the string is empty
+      if (!s) return ""; // Check if the string is empty
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     if (this.problemDifficulty) {
-      const difficulty = capitalizeFirstCharacter(this.problemDifficulty)  
-      this.allProblems = this.allProblems.filter(problem => problem.difficulty === difficulty)
+      const difficulty = capitalizeFirstCharacter(this.problemDifficulty);
+      this.allProblems = this.allProblems.filter(
+        (problem) => problem.difficulty === difficulty,
+      );
     }
 
     if (!this.includePremiumProblems) {
-      this.allProblems = this.allProblems.filter(problem => problem.isPaidOnly === false)
+      this.allProblems = this.allProblems.filter(
+        (problem) => problem.isPaidOnly === false,
+      );
     }
 
     const randomIndex = Math.floor(Math.random() * this.allProblems.length);
     this.problem = this.allProblems[randomIndex];
-    console.log("Selected question data:", this.problem)
-    this.render()
+    console.log("Selected question data:", this.problem);
+    this.render();
   }
 
-  async chooseProblemList (problemSet: QuestionBankEnum) {
-    this.problemSet = problemSet
-    await this.chooseProblems()
+  async chooseProblemList(problemSet: QuestionBankEnum) {
+    this.problemSet = problemSet;
+    await this.chooseProblems();
     const topicSet = new Set<string>();
-    this.allProblems.forEach(problem => {
-      problem.topicTags.forEach(tag => {
-        topicSet.add(tag.name)
-      })
-    })
-    this.problemTopics = Array.from(topicSet)
+    this.allProblems.forEach((problem) => {
+      problem.topicTags.forEach((tag) => {
+        topicSet.add(tag.name);
+      });
+    });
+    this.problemTopics = Array.from(topicSet);
   }
 
   async getProblemTopics() {
-    if (!this.problemTopics) return ['All topics']
-    return this.problemTopics
+    if (!this.problemTopics) return ["All topics"];
+    return this.problemTopics;
   }
 
-  skip () {
+  skip() {
     // chrome.runtime.sendMessage({ action: "skipQuestion" });
     console.log("Skipped");
   }
 
-
-  snooze () {
+  snooze() {
     // chrome.runtime.sendMessage({ action: "snoozeQuestion" });
     console.log("Snoozed");
   }
 
-  async getDailyQuote () {
+  async getDailyQuote() {
     // const response = await fetch("https://zenquotes.io/api/random");
     // const data = await response.json();
     // return data[0].q;
-    return "A leetcode a day keeps the doctor away"
+    return "A leetcode a day keeps the doctor away";
   }
 
-  async getCurrQuestionNumber () {
+  async getCurrQuestionNumber() {
     // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
     return "3";
-   }
+  }
 
-  async getTotalQuestionCount () {
+  async getTotalQuestionCount() {
     // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
     return "4";
   }
 
-  async getStreakCount () {
+  async getStreakCount() {
     // const { streak }: { streak?: number } = await chrome.storage.sync.get("streak");
-    return "122"
+    return "122";
   }
 
-  async getCompletionPercentage () {
+  async getCompletionPercentage() {
     const percentage = (
       (Number(await this.getCurrQuestionNumber()) /
         Number(await this.getTotalQuestionCount())) *
@@ -227,32 +237,34 @@ class myApi implements MyApi {
     return percentage;
   }
 
-  async getProblemUrl () {
+  async getProblemUrl() {
     // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
 
-    return Promise.resolve("https://leetcode.com/problems/" + this.problem?.titleSlug)
+    return Promise.resolve(
+      "https://leetcode.com/problems/" + this.problem?.titleSlug,
+    );
   }
 
-  enableRedirects () {
+  enableRedirects() {
     console.log("Enabling Redirects");
     // chrome.runtime.sendMessage({ action: "startRedirect" });
     // chrome.runtime.sendMessage({ action: "pauseTheGrind" });
     //
   }
 
-  disableRedirects () {
+  disableRedirects() {
     console.log("Disabling Redirects");
     // chrome.runtime.sendMessage({ action: "stopRedirect" });
     // chrome.runtime.sendMessage({ action: "resumeTheGrind" });
   }
 
-  async getQuestionTitle () {
-    return this.problem?.title || ""
+  async getQuestionTitle() {
+    return this.problem?.title || "";
   }
 
-  async getQuestionDifficulty () {
+  async getQuestionDifficulty() {
     console.log("Difficulty: ", this.problem?.difficulty.toLowerCase());
-    return this.problem?.difficulty.toLowerCase() || ""
+    return this.problem?.difficulty.toLowerCase() || "";
   }
 }
 
@@ -316,9 +328,9 @@ function addSettingsEventHandlers() {
   ) as HTMLSelectElement;
 
   problemSetSelect.addEventListener("change", (event) => {
-  const target = event.target as HTMLSelectElement;
-  const problemSet = target.value as QuestionBankEnum;
-    api.chooseProblemList(problemSet)
+    const target = event.target as HTMLSelectElement;
+    const problemSet = target.value as QuestionBankEnum;
+    api.chooseProblemList(problemSet);
   });
 
   // Problems per day
@@ -327,7 +339,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   problemsPerDayInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setProblemsPerDay(target.value)
+    api.setProblemsPerDay(target.value);
     console.log("Problems per day input changed:", target.value);
   });
 
@@ -337,7 +349,7 @@ function addSettingsEventHandlers() {
   ) as HTMLSelectElement;
   problemDifficultySelect.addEventListener("change", (event) => {
     const target = event.target as HTMLSelectElement;
-    api.setProblemDifficulty(target.value)
+    api.setProblemDifficulty(target.value);
     console.log("Problem difficulty selected:", target.value);
   });
 
@@ -407,6 +419,14 @@ function addSettingsEventHandlers() {
   showDailyQuoteToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
     api.setShowDailyQuote(target.checked);
+    const quoted: HTMLDivElement | null = document.querySelector(".quoted");
+    if (quoted) {
+      if (!target.checked) {
+        quoted.style.display = "none";
+      } else {
+        quoted.style.display = "block";
+      }
+    }
     console.log("Show daily quote toggle changed:", target.checked);
   });
 }
@@ -494,10 +514,10 @@ async function render(): Promise<void> {
 
   const question = document.querySelector(".question") as HTMLDivElement;
   if (question) {
-    question.classList.remove(`question--easy`)
-    question.classList.remove(`question--medium`)
-    question.classList.remove(`question--hard`)
-    question.classList.add(`question--${await api.getQuestionDifficulty()}`)
+    question.classList.remove(`question--easy`);
+    question.classList.remove(`question--medium`);
+    question.classList.remove(`question--hard`);
+    question.classList.add(`question--${await api.getQuestionDifficulty()}`);
   }
 
   // Set streak count
@@ -516,9 +536,8 @@ async function render(): Promise<void> {
   }
 
   // Get question name
-  const questionName: HTMLAnchorElement | null = document.querySelector(
-    ".question__link",
-  );
+  const questionName: HTMLAnchorElement | null =
+    document.querySelector(".question__link");
   if (questionName) {
     questionName.innerText = await api.getQuestionTitle();
   }
@@ -533,8 +552,8 @@ async function render(): Promise<void> {
     }
 
     const option = document.createElement("option");
-    option.value = 'all';
-    option.text = 'All topics';
+    option.value = "all";
+    option.text = "All topics";
     problemTopicsSelect.appendChild(option);
 
     const problemTopics = await api.getProblemTopics();
@@ -550,7 +569,8 @@ async function render(): Promise<void> {
     "include-premium-problems-toggle",
   ) as HTMLInputElement;
   if (includePremiumProblemsToggle) {
-    includePremiumProblemsToggle.checked = await api.getIncludePremiumProblems();
+    includePremiumProblemsToggle.checked =
+      await api.getIncludePremiumProblems();
   }
 
   const snoozeIntervalInput = document.getElementById(
@@ -581,11 +601,19 @@ async function render(): Promise<void> {
     redirectOnSuccessToggle.checked = await api.getRedirectOnSuccess();
   }
 
-
   const showDailyQuoteToggle = document.getElementById(
     "show-daily-quote-toggle",
   ) as HTMLInputElement;
   if (showDailyQuoteToggle) {
-    showDailyQuoteToggle.checked = await api.getShowDailyQuote();
+    const showQuote = await api.getShowDailyQuote();
+    showDailyQuoteToggle.checked = showQuote;
+    const quoted: HTMLDivElement | null = document.querySelector(".quoted");
+    if (quoted) {
+      if (!showDailyQuoteToggle.checked) {
+        quoted.style.display = "none";
+      } else {
+        quoted.style.display = "block";
+      }
+    }
   }
 }
