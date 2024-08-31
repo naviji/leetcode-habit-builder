@@ -6,6 +6,7 @@ export interface StorageEngine {
 }
 
 export interface State {
+    problemsSolved ?: number;
     problems?: Question[];
     problemsPerDay?: number;
     problemDifficulty?: "easy" | "medium" | "hard" | null;

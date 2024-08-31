@@ -38,23 +38,26 @@ interface MyApi {
   getRedirectOnSuccess(): Promise<boolean>;
   getShowDailyQuote(): Promise<boolean>;
   getProblemSet(): Promise<QuestionBankEnum>;
+  getProblemsPerDay(): Promise<string>;
 
   openTab(url: string): void;
 }
 
 class myApi implements MyApi {
-  private problem: Question | null = null;
-  private problemsPerDay = 1;
+  private problems: Question[] | null = null;
+  private problemsPerDay: number;
   private problemDifficulty: "easy" | "medium" | "hard" | null = null;
   private problemTopics: string[] | null = null;
   private allProblems: Question[] = [];
   private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150;
-  private includePremiumProblems: boolean = false;
-  private snoozeInterval: number = 38;
-  private restInterval: number = 29;
-  private whitelistedUrls: string = "";
-  private redirectOnSuccess: boolean = false;
-  private showDailyQuote: boolean = true;
+  private includePremiumProblems: boolean;
+  private snoozeInterval: number;
+  private restInterval: number;
+  private problemsSolved: number;
+  private whitelistedUrls: string;
+  private redirectOnSuccess: boolean;
+  private showDailyQuote: boolean;
+
   private nv: Navigator| null = null
   private renderFn = () => {}
   private db: StorageEngine
@@ -63,25 +66,38 @@ class myApi implements MyApi {
     this.nv = nv
     this.db = db
     this.renderFn = renderFn
+
+    // Set defaults
+    this.problemsPerDay = 2;
+    this.problemsSolved = 0;
+    this.includePremiumProblems = false;
+    this.snoozeInterval = 38;
+    this.restInterval = 29;
+    this.whitelistedUrls = ""
+    this.redirectOnSuccess = true
+    this.showDailyQuote = true
   }
 
   async init(): Promise<void> {
 
     console.log("Initializing...");
     const currentState = await this.db.get()
-    this.problem = currentState.problems?.[0] || null;
+    this.problems = currentState.problems || null;
     this.problemSet = currentState.problemSet || QuestionBankEnum.NeetCode150;
-    if (!this.problem) {
+    this.problemsPerDay = currentState.problemsPerDay || this.problemsPerDay;
+    this.problemsSolved = currentState.problemsSolved || this.problemsSolved;
+    this.problemDifficulty = currentState.problemDifficulty || this.problemDifficulty;
+    this.includePremiumProblems = currentState.includePremiumProblems || this.includePremiumProblems;
+    this.snoozeInterval = currentState.snoozeInterval || this.snoozeInterval;
+    this.restInterval = currentState.restInterval || this.restInterval;
+    this.whitelistedUrls = currentState.whitelistedUrls || this.whitelistedUrls;
+    this.redirectOnSuccess = currentState.redirectOnSuccess || this.redirectOnSuccess;
+    this.showDailyQuote = currentState.showDailyQuote || this.showDailyQuote;
+
+    if (!this.problems) {
       api.chooseProblemFromList(this.problemSet);
     }
-    this.problemsPerDay = currentState.problemsPerDay || 1;
-    this.problemDifficulty = currentState.problemDifficulty || null;
-    this.includePremiumProblems = currentState.includePremiumProblems || false;
-    this.snoozeInterval = currentState.snoozeInterval || 38;
-    this.restInterval = currentState.restInterval || 29;
-    this.whitelistedUrls = currentState.whitelistedUrls || "";
-    this.redirectOnSuccess = currentState.redirectOnSuccess || false;
-    this.showDailyQuote = currentState.showDailyQuote || true;
+    
     this.renderFn()
   }
 
@@ -157,8 +173,16 @@ class myApi implements MyApi {
   }
 
   async setProblemsPerDay(value: string) {
+    if (Number(value) < 1) {
+      console.log("Error: Invalid problems per day");
+    }
     this.problemsPerDay = Number(value);
+    this.chooseProblems()
     this.render();
+  }
+
+  async getProblemsPerDay() {
+    return this.problemsPerDay.toString();
   }
 
   async setProblemDifficulty(difficulty: string) {
@@ -176,12 +200,6 @@ class myApi implements MyApi {
   }
 
   private async chooseProblems() {
-    console.log(
-      "Choosing problems",
-      this.problemSet,
-      this.problemsPerDay,
-      this.problemDifficulty,
-    );
     const questionsInSet = questions[this.problemSet];
     this.allProblems = questionsInSet.map(
       (problemSlug) => questionInfo[problemSlug].data.question,
@@ -205,10 +223,14 @@ class myApi implements MyApi {
       );
     }
 
-    const randomIndex = Math.floor(Math.random() * this.allProblems.length);
-    this.problem = this.allProblems[randomIndex];
+    let randomIndex = Math.floor(Math.random() * this.allProblems.length);
+    this.problems = []
+    for (let i = 0; i < this.problemsPerDay; i++) {
+      this.problems.push(this.allProblems[randomIndex]);
+      randomIndex = Math.floor(Math.random() * this.allProblems.length);
+    }
     await this.db.set({
-      problems: [this.problem]
+      problems: this.problems
     })
     this.render();
   }
@@ -233,9 +255,9 @@ class myApi implements MyApi {
     return this.problemTopics;
   }
 
-  skip() {
-    // chrome.runtime.sendMessage({ action: "skipQuestion" });
-    console.log("Skipped");
+  // Using an arrow function to capture `this`
+  skip = async () => {
+    await this.chooseProblems()
   }
 
   snooze() {
@@ -244,20 +266,19 @@ class myApi implements MyApi {
   }
 
   async getDailyQuote() {
-    // const response = await fetch("https://zenquotes.io/api/random");
-    // const data = await response.json();
-    // return data[0].q;
     return "A leetcode a day keeps the doctor away";
   }
 
   async getCurrQuestionNumber() {
-    // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
-    return "3";
+    return (this.problemsSolved + 1).toString()
   }
 
   async getTotalQuestionCount() {
     // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
-    return "4";
+    if (!this.problems?.length) {
+      throw new Error("No problems found");
+    }
+    return this.problems.length.toString();
   }
 
   async getStreakCount() {
@@ -277,8 +298,11 @@ class myApi implements MyApi {
 
 
   async getProblemUrl() {
+    if (!this.problems?.length) {
+      throw new Error("No problems found");
+    }
     return Promise.resolve(
-      "https://leetcode.com/problems/" + this.problem?.titleSlug,
+      "https://leetcode.com/problems/" + this.problems[this.problemsSolved].titleSlug
     );
   }
 
@@ -296,12 +320,19 @@ class myApi implements MyApi {
   }
 
   async getQuestionTitle() {
-    return this.problem?.title || "";
+    if (!this.problems?.length) {
+      throw new Error("No problems found");
+    }
+    return this.problems[this.problemsSolved].title || "";
   }
 
   async getQuestionDifficulty() {
-    console.log("Difficulty: ", this.problem?.difficulty.toLowerCase());
-    return this.problem?.difficulty.toLowerCase() || "";
+    if (!this.problems?.length) {
+      throw new Error("No problems found");
+    }
+    const problem = this.problems[this.problemsSolved];
+    console.log("Difficulty: ", problem.difficulty.toLowerCase());
+    return problem.difficulty.toLowerCase() || "";
   }
 }
 
@@ -658,6 +689,16 @@ async function render(): Promise<void> {
       }
     }
   }
+
+
+  // Problems per day
+  const problemsPerDayInput = document.getElementById(
+    "problems-per-day-input",
+  ) as HTMLInputElement;
+  if (problemsPerDayInput) {
+    problemsPerDayInput.value = await api.getProblemsPerDay();
+  }
+
 }
 
 const api = new myApi(browserNavigator, localStorageEngine, render);

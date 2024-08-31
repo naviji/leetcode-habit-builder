@@ -14,8 +14,10 @@ class LocalStorageEngine implements StorageEngine {
     }
 
     async set(state: State): Promise<void> {
+        const oldState = await this.get();
         console.log("Saving state", state);
-        localStorage.setItem(LocalStorageEngine.KEY, JSON.stringify(state));
+        const newState = { ...oldState, ...state };
+        localStorage.setItem(LocalStorageEngine.KEY, JSON.stringify(newState));
     }
 }
 
