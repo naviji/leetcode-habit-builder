@@ -24,7 +24,9 @@ interface MyApi {
   setIncludePremiumProblems(value: boolean): Promise<void>;
   setSnoozeInterval(value: string): Promise<void>;
   setRestInterval(value: string): Promise<void>;
-  setWhitelistedUrls(value: string): void;
+  setWhitelistedUrls(value: string): Promise<void>;
+  setRedirectOnSuccess(value: boolean): Promise<void>;
+  setShowDailyQuote(value: boolean): Promise<void>;
 
   enableRedirects(): void;
   disableRedirects(): void;
@@ -41,6 +43,8 @@ interface MyApi {
   getSnoozeInterval(): Promise<string>;
   getRestInterval(): Promise<string>;
   getWhitelistedUrls(): Promise<string>;
+  getRedirectOnSuccess(): Promise<boolean>;
+  getShowDailyQuote(): Promise<boolean>;
 
   render(): void;
   
@@ -58,7 +62,24 @@ class myApi implements MyApi {
   private snoozeInterval: number = 38
   private restInterval: number = 29
   private whitelistedUrls: string = ""
+  private redirectOnSuccess: boolean = false
+  private showDailyQuote: boolean = false
 
+  async setRedirectOnSuccess(value: boolean): Promise<void> {
+    this.redirectOnSuccess = value
+  }
+
+  async getRedirectOnSuccess(): Promise<boolean> {
+    return this.redirectOnSuccess
+  }
+
+  async setShowDailyQuote(value: boolean): Promise<void> {
+    this.showDailyQuote = value
+  }
+
+  async getShowDailyQuote(): Promise<boolean> {
+    return this.showDailyQuote
+  }
 
   render() {
     render()
@@ -275,21 +296,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // }
 
 function addSettingsEventHandlers() {
-
-  const redirectOnSuccessDiv = document.getElementById(
-    "redirect-on-success",
-  ) as HTMLElement;
-  const redirectOnSuccessToggle = document.getElementById(
-    "redirect-on-success-toggle",
-  ) as HTMLInputElement;
-
-  const showDailyQuoteDiv = document.getElementById(
-    "show-daily-quote",
-  ) as HTMLElement;
-  const showDailyQuoteToggle = document.getElementById(
-    "show-daily-quote-toggle",
-  ) as HTMLInputElement;
-
   // Toggle ON / OFF
   const pauseToggleInput = document.getElementById(
     "pause-toggle",
@@ -385,20 +391,22 @@ function addSettingsEventHandlers() {
   });
 
   // Redirect on success
-  redirectOnSuccessDiv.addEventListener("click", () => {
-    console.log("Redirect on success clicked");
-  });
+  const redirectOnSuccessToggle = document.getElementById(
+    "redirect-on-success-toggle",
+  ) as HTMLInputElement;
   redirectOnSuccessToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
+    api.setRedirectOnSuccess(target.checked);
     console.log("Redirect on success toggle changed:", target.checked);
   });
 
   // Show daily quote
-  showDailyQuoteDiv.addEventListener("click", () => {
-    console.log("Show daily quote clicked");
-  });
+  const showDailyQuoteToggle = document.getElementById(
+    "show-daily-quote-toggle",
+  ) as HTMLInputElement;
   showDailyQuoteToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
+    api.setShowDailyQuote(target.checked);
     console.log("Show daily quote toggle changed:", target.checked);
   });
 }
@@ -566,5 +574,18 @@ async function render(): Promise<void> {
     whitelistedUrlsTextarea.value = await api.getWhitelistedUrls();
   }
 
+  const redirectOnSuccessToggle = document.getElementById(
+    "redirect-on-success-toggle",
+  ) as HTMLInputElement;
+  if (redirectOnSuccessToggle) {
+    redirectOnSuccessToggle.checked = await api.getRedirectOnSuccess();
+  }
 
+
+  const showDailyQuoteToggle = document.getElementById(
+    "show-daily-quote-toggle",
+  ) as HTMLInputElement;
+  if (showDailyQuoteToggle) {
+    showDailyQuoteToggle.checked = await api.getShowDailyQuote();
+  }
 }
