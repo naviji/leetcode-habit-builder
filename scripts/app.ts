@@ -4,79 +4,23 @@ import { questions } from "./data.js";
 import { Navigator } from "../types/navigator.js";
 import { App } from "../types/app.js";
 
-
 export class Application implements App {
-  private problems: Question[] | null = null;
-  private problemsPerDay: number;
-  private problemDifficulty: "easy" | "medium" | "hard" | null = null;
   private problemTopics: string[] | null = null;
   private allProblems: Question[] = [];
-  private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150;
-  private includePremiumProblems: boolean;
-  private snoozeInterval: number;
-  private restInterval: number;
-  private problemsSolved: number;
-  private whitelistedUrls: string;
-  private redirectOnSuccess: boolean;
-  private showDailyQuote: boolean;
-  private selectedTopic: string | null;
   private questionInfo: Questions | null = null;
 
   private nv: Navigator | null = null;
-  private renderFn = () => { };
+  private renderFn = () => {};
   private db: StorageEngine;
 
   constructor(nv: Navigator, db: StorageEngine, renderFn: () => void) {
     this.nv = nv;
     this.db = db;
     this.renderFn = renderFn;
-
-    // Set defaults
-    this.problemsPerDay = 2;
-    this.problemsSolved = 0;
-    this.includePremiumProblems = false;
-    this.snoozeInterval = 38;
-    this.restInterval = 29;
-    this.whitelistedUrls = "";
-    this.redirectOnSuccess = true;
-    this.showDailyQuote = true;
-    this.selectedTopic = null
   }
 
   async init(): Promise<void> {
-    this.loadProblemInfo()
-    const currentState = await this.db.get();
-    this.problems = currentState.problems || null;
-    this.problemSet = currentState.problemSet || QuestionBankEnum.NeetCode150;
-    this.problemsPerDay = currentState.problemsPerDay || this.problemsPerDay;
-    this.problemsSolved = currentState.problemsSolved || this.problemsSolved;
-    this.problemDifficulty = currentState.problemDifficulty || this.problemDifficulty;
-    this.includePremiumProblems = currentState.includePremiumProblems || this.includePremiumProblems;
-    this.snoozeInterval = currentState.snoozeInterval || this.snoozeInterval;
-    this.restInterval = currentState.restInterval || this.restInterval;
-    this.whitelistedUrls = currentState.whitelistedUrls || this.whitelistedUrls;
-    this.redirectOnSuccess = currentState.redirectOnSuccess || this.redirectOnSuccess;
-    this.showDailyQuote = currentState.showDailyQuote || this.showDailyQuote;
-    this.selectedTopic = currentState.selectedTopic || this.selectedTopic;
-
-    await this.db.set({
-      problemsPerDay: this.problemsPerDay,
-      problemsSolved: this.problemsSolved,
-      problemDifficulty: this.problemDifficulty,
-      includePremiumProblems: this.includePremiumProblems,
-      snoozeInterval: this.snoozeInterval,
-      restInterval: this.restInterval,
-      whitelistedUrls: this.whitelistedUrls,
-      redirectOnSuccess: this.redirectOnSuccess,
-      showDailyQuote: this.showDailyQuote,
-      selectedTopic: this.selectedTopic
-    });
-
-    if (!this.problems) { // This will set problems and problemSet in db
-      this.setProblemSet(this.problemSet);
-    }
-
-
+    this.loadProblemInfo();
     this.renderFn();
   }
 
@@ -85,7 +29,7 @@ export class Application implements App {
   }
 
   async getProblemSet(): Promise<QuestionBankEnum> {
-    return this.problemSet;
+    return (await this.db.get()).problemSet as QuestionBankEnum;
   }
 
   openTab(url: string): void {
@@ -93,25 +37,23 @@ export class Application implements App {
   }
 
   async setRedirectOnSuccess(value: boolean): Promise<void> {
-    this.redirectOnSuccess = value;
     await this.db.set({
-      redirectOnSuccess: this.redirectOnSuccess
+      redirectOnSuccess: value,
     });
   }
 
   async getRedirectOnSuccess(): Promise<boolean> {
-    return this.redirectOnSuccess;
+    return (await this.db.get()).redirectOnSuccess as boolean;
   }
 
   async setShowDailyQuote(value: boolean): Promise<void> {
-    this.showDailyQuote = value;
     await this.db.set({
-      showDailyQuote: this.showDailyQuote
+      showDailyQuote: value,
     });
   }
 
   async getShowDailyQuote(): Promise<boolean> {
-    return this.showDailyQuote;
+    return (await this.db.get()).showDailyQuote as boolean;
   }
 
   private render() {
@@ -119,18 +61,17 @@ export class Application implements App {
   }
 
   async getIncludePremiumProblems() {
-    return this.includePremiumProblems;
+    return (await this.db.get()).includePremiumProblems as boolean;
   }
 
   async setWhitelistedUrls(value: string): Promise<void> {
-    this.whitelistedUrls = value;
     await this.db.set({
-      whitelistedUrls: this.whitelistedUrls
+      whitelistedUrls: value,
     });
   }
 
   async getWhitelistedUrls(): Promise<string> {
-    return this.whitelistedUrls;
+    return (await this.db.get()).whitelistedUrls as string;
   }
 
   async setSnoozeInterval(value: string) {
@@ -138,14 +79,14 @@ export class Application implements App {
     if (interval < 0) {
       throw new Error("Invalid interval");
     }
-    this.snoozeInterval = Number(value);
+    const snoozeInterval = Number(value);
     await this.db.set({
-      snoozeInterval: this.snoozeInterval
+      snoozeInterval: snoozeInterval,
     });
   }
 
   async getSnoozeInterval() {
-    return this.snoozeInterval.toString();
+    return (await this.db.get()).snoozeInterval?.toString() as string;
   }
 
   async setRestInterval(value: string) {
@@ -153,20 +94,19 @@ export class Application implements App {
     if (interval < 0) {
       throw new Error("Invalid interval");
     }
-    this.restInterval = Number(value);
+    const restInterval = Number(value);
     await this.db.set({
-      restInterval: this.restInterval
+      restInterval: restInterval,
     });
   }
 
   async getRestInterval() {
-    return this.restInterval.toString();
+    return (await this.db.get()).restInterval?.toString() as string;
   }
 
   async setIncludePremiumProblems(value: boolean) {
-    this.includePremiumProblems = value;
     await this.db.set({
-      includePremiumProblems: this.includePremiumProblems
+      includePremiumProblems: value,
     });
     await this.chooseProblems();
   }
@@ -175,25 +115,26 @@ export class Application implements App {
     if (Number(value) < 1) {
       throw new Error("Invalid value");
     }
-    this.problemsPerDay = Number(value);
+    const problemsPerDay = Number(value);
     await this.db.set({
-      problemsPerDay: this.problemsPerDay
+      problemsPerDay: problemsPerDay,
     });
     this.chooseProblems();
     this.render();
   }
 
   async getProblemsPerDay() {
-    return this.problemsPerDay.toString();
+    return (await this.db.get()).problemsPerDay?.toString() as string;
   }
 
   async setProblemDifficulty(difficulty: string) {
-    if (difficulty === "easy" ||
+    if (
+      difficulty === "easy" ||
       difficulty === "medium" ||
-      difficulty === "hard") {
-      this.problemDifficulty = difficulty;
+      difficulty === "hard"
+    ) {
       await this.db.set({
-        problemDifficulty: this.problemDifficulty
+        problemDifficulty: difficulty,
       });
       await this.chooseProblems();
     } else {
@@ -201,14 +142,19 @@ export class Application implements App {
     }
   }
 
+  async getProblemTopic(): Promise<string> {
+    return (await this.db.get()).problemTopic as string;
+  }
+
   private async chooseProblems() {
     if (!this.questionInfo) {
       throw new Error("No question info");
     }
+    const problemSet = await this.getProblemSet();
     const questionInfo = this.questionInfo as Questions;
-    const questionsInSet = questions[this.problemSet];
+    const questionsInSet = questions[problemSet];
     this.allProblems = questionsInSet.map(
-      (problemSlug) => questionInfo[problemSlug].data.question
+      (problemSlug) => questionInfo[problemSlug].data.question,
     );
 
     function capitalizeFirstCharacter(s: string) {
@@ -216,43 +162,46 @@ export class Application implements App {
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
-    if (this.problemDifficulty) {
-      const difficulty = capitalizeFirstCharacter(this.problemDifficulty);
+    const problemDifficulty = await this.getProblemDifficulty();
+    if (problemDifficulty) {
+      const difficulty = capitalizeFirstCharacter(problemDifficulty);
       this.allProblems = this.allProblems.filter(
-        (problem) => problem.difficulty === difficulty
+        (problem) => problem.difficulty === difficulty,
       );
     }
 
-    if (!this.includePremiumProblems) {
+    const includePremiumProblems = await this.getIncludePremiumProblems();
+    if (!includePremiumProblems) {
       this.allProblems = this.allProblems.filter(
-        (problem) => problem.isPaidOnly === false
+        (problem) => problem.isPaidOnly === false,
       );
     }
 
-    if (this.selectedTopic) {
-      this.allProblems = this.allProblems.filter(
-        (problem) => problem.topicTags
+    const problemTopic = await this.getProblemTopic();
+    if (problemTopic) {
+      this.allProblems = this.allProblems.filter((problem) =>
+        problem.topicTags
           .map((tag) => tag.name)
-          .includes(this.selectedTopic as string)
+          .includes(problemTopic as string),
       );
     }
 
+    const problemsPerDay = (await this.db.get()).problemsPerDay as number;
     let randomIndex = Math.floor(Math.random() * this.allProblems.length);
-    this.problems = [];
-    for (let i = 0; i < this.problemsPerDay; i++) {
-      this.problems.push(this.allProblems[randomIndex]);
+    const problems = [];
+    for (let i = 0; i < problemsPerDay; i++) {
+      problems.push(this.allProblems[randomIndex]);
       randomIndex = Math.floor(Math.random() * this.allProblems.length);
     }
     await this.db.set({
-      problems: this.problems
+      problems: problems,
     });
     this.render();
   }
 
   async setProblemSet(problemSet: QuestionBankEnum) {
-    this.problemSet = problemSet;
     await this.db.set({
-      problemSet
+      problemSet,
     });
     await this.chooseProblems();
     const topicSet = new Set<string>();
@@ -262,7 +211,6 @@ export class Application implements App {
       });
     });
     this.problemTopics = Array.from(topicSet);
-    console.log("Problem topics", this.problemTopics);
   }
 
   async getProblemTopics() {
@@ -271,10 +219,9 @@ export class Application implements App {
   }
 
   async setProblemTopic(value: string) {
-    this.selectedTopic = value
     await this.db.set({
-      selectedTopic: this.selectedTopic
-    })
+      problemTopic: value,
+    });
   }
 
   // Using an arrow function to capture `this`
@@ -291,14 +238,13 @@ export class Application implements App {
   }
 
   async getCurrQuestionNumber() {
-    return (this.problemsSolved + 1).toString();
+    const { problemsSolved = 0 } = await this.db.get();
+    return (problemsSolved + 1).toString();
   }
 
   async getTotalQuestionCount() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    return this.problems.length.toString();
+    const { problems = [] } = await this.db.get();
+    return problems.length.toString();
   }
 
   async getStreakCount() {
@@ -314,35 +260,28 @@ export class Application implements App {
     return percentage;
   }
 
-
-
   async getProblemUrl() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
+    const { problems = [] } = await this.db.get();
+    const { problemsSolved = 0 } = await this.db.get();
     return Promise.resolve(
-      "https://leetcode.com/problems/" + this.problems[this.problemsSolved].titleSlug
+      "https://leetcode.com/problems/" + problems[problemsSolved].titleSlug,
     );
   }
 
-  async setRedirectsEnabled (value: boolean) {
+  async setRedirectsEnabled(value: boolean) {
     console.log("Enabling Redirects", value);
   }
 
-
-  async getQuestionTitle() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    return this.problems[this.problemsSolved].title || "";
+  async getProblemTitle() {
+    const { problems = [] } = await this.db.get();
+    const { problemsSolved = 0 } = await this.db.get();
+    return problems[problemsSolved].title;
   }
 
-  async getQuestionDifficulty() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    const problem = this.problems[this.problemsSolved];
-    console.log("Difficulty: ", problem.difficulty.toLowerCase());
-    return problem.difficulty.toLowerCase() || "";
+  async getProblemDifficulty() {
+    const { problems = [] } = await this.db.get();
+    const { problemsSolved = 0 } = await this.db.get();
+    const problem = problems[problemsSolved];
+    return problem.difficulty.toLowerCase();
   }
 }

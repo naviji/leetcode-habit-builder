@@ -24,8 +24,8 @@ export interface App {
   getStreakCount(): Promise<string>;
   getCompletionPercentage(): Promise<string>;
   getProblemUrl(): Promise<string>;
-  getQuestionTitle(): Promise<string>;
-  getQuestionDifficulty(): Promise<string>;
+  getProblemTitle(): Promise<string>;
+  getProblemDifficulty(): Promise<string>;
   getProblemTopics(): Promise<string[]>;
   getIncludePremiumProblems(): Promise<boolean>;
   getSnoozeInterval(): Promise<string>;
@@ -35,6 +35,7 @@ export interface App {
   getShowDailyQuote(): Promise<boolean>;
   getProblemSet(): Promise<QuestionBankEnum>;
   getProblemsPerDay(): Promise<string>;
+  getProblemTopic(): Promise<string>;
 
   openTab(url: string): void;
 }

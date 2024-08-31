@@ -1,11 +1,10 @@
 import { QuestionBankEnum } from "../types/questions.js";
 import browserNavigator from "./browserNavigator.js";
-import LocalStorageEngine from "./localStorageEngine.js"
+import LocalStorageEngine from "./localStorageEngine.js";
 import { Application } from "./app.js";
 
-
 document.addEventListener("DOMContentLoaded", async () => {
-  await app.init()
+  await app.init();
   addNavigationEventHandlers();
   addSettingsEventHandlers();
 });
@@ -24,7 +23,9 @@ function addSettingsEventHandlers() {
     "problem-set-select",
   ) as HTMLSelectElement;
   problemSetSelect.addEventListener("change", (event) => {
-    app.setProblemSet((event.target as HTMLSelectElement).value as QuestionBankEnum);
+    app.setProblemSet(
+      (event.target as HTMLSelectElement).value as QuestionBankEnum,
+    );
   });
 
   // Problems per day
@@ -99,7 +100,7 @@ function addSettingsEventHandlers() {
     app.setShowDailyQuote((event.target as HTMLInputElement).checked);
     const quoted = document.querySelector(".quoted") as HTMLDivElement | null;
     if (quoted) {
-      quoted.style.display = await app.getShowDailyQuote() ? "block" : "none";
+      quoted.style.display = (await app.getShowDailyQuote()) ? "block" : "none";
     }
   });
 }
@@ -183,7 +184,7 @@ export async function render(): Promise<void> {
     question.classList.remove(`question--easy`);
     question.classList.remove(`question--medium`);
     question.classList.remove(`question--hard`);
-    question.classList.add(`question--${await app.getQuestionDifficulty()}`);
+    question.classList.add(`question--${await app.getProblemDifficulty()}`);
   }
 
   // Set streak count
@@ -205,7 +206,7 @@ export async function render(): Promise<void> {
   const questionName: HTMLAnchorElement | null =
     document.querySelector(".question__link");
   if (questionName) {
-    questionName.innerText = await app.getQuestionTitle();
+    questionName.innerText = await app.getProblemTitle();
   }
 
   const problemTopicsSelect = document.getElementById(
@@ -230,7 +231,6 @@ export async function render(): Promise<void> {
       problemTopicsSelect.appendChild(option);
     }
   }
-
 
   const problemSetSelect = document.getElementById(
     "problem-set-select",
@@ -297,7 +297,6 @@ export async function render(): Promise<void> {
     }
   }
 
-
   // Problems per day
   const problemsPerDayInput = document.getElementById(
     "problems-per-day-input",
@@ -305,8 +304,49 @@ export async function render(): Promise<void> {
   if (problemsPerDayInput) {
     problemsPerDayInput.value = await app.getProblemsPerDay();
   }
-
 }
 
-export const app = new Application(browserNavigator, new LocalStorageEngine(), render);
+const db = new LocalStorageEngine();
+db.set({
+  problems: [
+    {
+      acRate: 58.26094394474123,
+      difficulty: "Easy",
+      freqBar: null,
+      questionFrontendId: "704",
+      isFavor: false,
+      isPaidOnly: false,
+      status: null,
+      title: "Binary Search",
+      titleSlug: "binary-search",
+      topicTags: [
+        {
+          name: "Array",
+          id: "VG9waWNUYWdOb2RlOjU=",
+          slug: "array",
+        },
+        {
+          name: "Binary Search",
+          id: "VG9waWNUYWdOb2RlOjEx",
+          slug: "binary-search",
+        },
+      ],
+      hasSolution: true,
+      hasVideoSolution: false,
+    },
+  ],
+  problemSet: QuestionBankEnum.NeetCode150,
+  problemsPerDay: 1,
+  problemsSolved: 0,
+  problemDifficulty: null,
+  includePremiumProblems: false,
+  snoozeInterval: 12,
+  restInterval: 24,
+  whitelistedUrls: "",
+  redirectOnSuccess: true,
+  showDailyQuote: true,
+  problemTopic: null,
+});
+
+export const app = new Application(browserNavigator, db, render);
 window.myApi = app;

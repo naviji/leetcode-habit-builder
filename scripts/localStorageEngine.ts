@@ -1,4 +1,5 @@
-import { StorageEngine, State } from "../types/storageEngine.js"
+import { StorageEngine } from "../types/storageEngine.js"
+import { State } from '../types/State.js';
 
 class LocalStorageEngine implements StorageEngine {
     private static KEY = 'leetcode-habit-builder-state';
@@ -9,15 +10,12 @@ class LocalStorageEngine implements StorageEngine {
             return {};
         }
         const state = JSON.parse(json) as State;
-        console.log("Loaded state", state);
         return state
     }
 
     async set(state: State): Promise<void> {
         const oldState = await this.get();
-        console.log("New diff", state);
         const newState = { ...oldState, ...state };
-        console.log("New state", newState);
         localStorage.setItem(LocalStorageEngine.KEY, JSON.stringify(newState));
     }
 }
