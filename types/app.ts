@@ -6,7 +6,7 @@ export interface App {
   skip(): void;
   snooze(): void;
   init(): Promise<void>;
-  chooseProblemFromList(list: QuestionBankEnum): Promise<void>;
+  setProblemSet(list: QuestionBankEnum): Promise<void>;
   setProblemsPerDay(value: string): void;
   setIncludePremiumProblems(value: boolean): Promise<void>;
   setSnoozeInterval(value: string): Promise<void>;
@@ -14,9 +14,10 @@ export interface App {
   setWhitelistedUrls(value: string): Promise<void>;
   setRedirectOnSuccess(value: boolean): Promise<void>;
   setShowDailyQuote(value: boolean): Promise<void>;
+  setRedirectsEnabled(value: boolean): Promise<void>;
+  setProblemTopic(value: string): void;
 
-  enableRedirects(): void;
-  disableRedirects(): void;
+
   getDailyQuote(): Promise<string>;
   getCurrQuestionNumber(): Promise<string>;
   getTotalQuestionCount(): Promise<string>;

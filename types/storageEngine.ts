@@ -18,4 +18,5 @@ export interface State {
     whitelistedUrls?: string;
     redirectOnSuccess?: boolean;
     showDailyQuote?: boolean;
+    selectedTopic?: string | null;
 }

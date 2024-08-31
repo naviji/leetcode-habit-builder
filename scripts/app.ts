@@ -1,7 +1,6 @@
 import { QuestionBankEnum, Question } from "../types/questions.js";
 import { StorageEngine } from "../types/storageEngine.js";
 import { questions, questionInfo } from "./data.js";
-import { app, render } from "./popup.js";
 import { Navigator } from "../types/navigator.js";
 import { App } from "../types/app.js";
 
@@ -20,6 +19,7 @@ export class Application implements App {
   private whitelistedUrls: string;
   private redirectOnSuccess: boolean;
   private showDailyQuote: boolean;
+  private selectedTopic: string | null;
 
   private nv: Navigator | null = null;
   private renderFn = () => { };
@@ -39,6 +39,7 @@ export class Application implements App {
     this.whitelistedUrls = "";
     this.redirectOnSuccess = true;
     this.showDailyQuote = true;
+    this.selectedTopic = null
   }
 
   async init(): Promise<void> {
@@ -56,6 +57,7 @@ export class Application implements App {
     this.whitelistedUrls = currentState.whitelistedUrls || this.whitelistedUrls;
     this.redirectOnSuccess = currentState.redirectOnSuccess || this.redirectOnSuccess;
     this.showDailyQuote = currentState.showDailyQuote || this.showDailyQuote;
+    this.selectedTopic = currentState.selectedTopic || this.selectedTopic;
 
     await this.db.set({
       problemsPerDay: this.problemsPerDay,
@@ -66,11 +68,12 @@ export class Application implements App {
       restInterval: this.restInterval,
       whitelistedUrls: this.whitelistedUrls,
       redirectOnSuccess: this.redirectOnSuccess,
-      showDailyQuote: this.showDailyQuote
+      showDailyQuote: this.showDailyQuote,
+      selectedTopic: this.selectedTopic
     });
 
     if (!this.problems) { // This will set problems and problemSet in db
-      app.chooseProblemFromList(this.problemSet);
+      this.setProblemSet(this.problemSet);
     }
 
     this.renderFn();
@@ -107,7 +110,7 @@ export class Application implements App {
   }
 
   private render() {
-    render();
+    this.renderFn();
   }
 
   async getIncludePremiumProblems() {
@@ -184,14 +187,13 @@ export class Application implements App {
       difficulty === "medium" ||
       difficulty === "hard") {
       this.problemDifficulty = difficulty;
-      await this.chooseProblems();
       await this.db.set({
         problemDifficulty: this.problemDifficulty
       });
+      await this.chooseProblems();
     } else {
       throw new Error("Invalid difficulty");
     }
-    // Add render
   }
 
   private async chooseProblems() {
@@ -218,6 +220,14 @@ export class Application implements App {
       );
     }
 
+    if (this.selectedTopic) {
+      this.allProblems = this.allProblems.filter(
+        (problem) => problem.topicTags
+          .map((tag) => tag.name)
+          .includes(this.selectedTopic as string)
+      );
+    }
+
     let randomIndex = Math.floor(Math.random() * this.allProblems.length);
     this.problems = [];
     for (let i = 0; i < this.problemsPerDay; i++) {
@@ -230,7 +240,7 @@ export class Application implements App {
     this.render();
   }
 
-  async chooseProblemFromList(problemSet: QuestionBankEnum) {
+  async setProblemSet(problemSet: QuestionBankEnum) {
     this.problemSet = problemSet;
     await this.db.set({
       problemSet
@@ -243,11 +253,19 @@ export class Application implements App {
       });
     });
     this.problemTopics = Array.from(topicSet);
+    console.log("Problem topics", this.problemTopics);
   }
 
   async getProblemTopics() {
     if (!this.problemTopics) return ["All topics"];
     return this.problemTopics;
+  }
+
+  async setProblemTopic(value: string) {
+    this.selectedTopic = value
+    await this.db.set({
+      selectedTopic: this.selectedTopic
+    })
   }
 
   // Using an arrow function to capture `this`
@@ -256,7 +274,6 @@ export class Application implements App {
   };
 
   snooze() {
-    // chrome.runtime.sendMessage({ action: "snoozeQuestion" });
     console.log("Snoozed");
   }
 
@@ -299,18 +316,10 @@ export class Application implements App {
     );
   }
 
-  enableRedirects() {
-    console.log("Enabling Redirects");
-    // chrome.runtime.sendMessage({ action: "startRedirect" });
-    // chrome.runtime.sendMessage({ action: "pauseTheGrind" });
-    //
+  async setRedirectsEnabled (value: boolean) {
+    console.log("Enabling Redirects", value);
   }
 
-  disableRedirects() {
-    console.log("Disabling Redirects");
-    // chrome.runtime.sendMessage({ action: "stopRedirect" });
-    // chrome.runtime.sendMessage({ action: "resumeTheGrind" });
-  }
 
   async getQuestionTitle() {
     if (!this.problems?.length) {

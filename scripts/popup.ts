@@ -12,28 +12,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function addSettingsEventHandlers() {
   // Toggle ON / OFF
-  const pauseToggleInput = document.getElementById(
+  const pauseToggle = document.getElementById(
     "pause-toggle",
   ) as HTMLInputElement;
-  pauseToggleInput.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    console.log("Pause toggle changed:", target.checked);
-    if (target.checked) {
-      app.enableRedirects();
-    } else {
-      app.disableRedirects();
-    }
+  pauseToggle.addEventListener("change", (event) => {
+    app.setRedirectsEnabled((event.target as HTMLInputElement).checked);
   });
 
   // Problem sets
   const problemSetSelect = document.getElementById(
     "problem-set-select",
   ) as HTMLSelectElement;
-
   problemSetSelect.addEventListener("change", (event) => {
-    const target = event.target as HTMLSelectElement;
-    const problemSet = target.value as QuestionBankEnum;
-    app.chooseProblemFromList(problemSet);
+    app.setProblemSet((event.target as HTMLSelectElement).value as QuestionBankEnum);
   });
 
   // Problems per day
@@ -41,9 +32,7 @@ function addSettingsEventHandlers() {
     "problems-per-day-input",
   ) as HTMLInputElement;
   problemsPerDayInput.addEventListener("input", (event) => {
-    const target = event.target as HTMLInputElement;
-    app.setProblemsPerDay(target.value);
-    console.log("Problems per day input changed:", target.value);
+    app.setProblemsPerDay((event.target as HTMLInputElement).value);
   });
 
   // Problem difficulty
@@ -51,9 +40,7 @@ function addSettingsEventHandlers() {
     "problem-difficulty-select",
   ) as HTMLSelectElement;
   problemDifficultySelect.addEventListener("change", (event) => {
-    const target = event.target as HTMLSelectElement;
-    app.setProblemDifficulty(target.value);
-    console.log("Problem difficulty selected:", target.value);
+    app.setProblemDifficulty((event.target as HTMLSelectElement).value);
   });
 
   // Problem topics
@@ -61,8 +48,7 @@ function addSettingsEventHandlers() {
     "problem-topics-select",
   ) as HTMLSelectElement;
   problemTopicsSelect.addEventListener("change", (event) => {
-    const target = event.target as HTMLSelectElement;
-    console.log("Problem topics selected:", target.value);
+    app.setProblemTopic((event.target as HTMLSelectElement).value);
   });
 
   // Include premium problems
@@ -70,9 +56,7 @@ function addSettingsEventHandlers() {
     "include-premium-problems-toggle",
   ) as HTMLInputElement;
   includePremiumProblemsToggle.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    app.setIncludePremiumProblems(target.checked);
-    console.log("Include premium problems toggle changed:", target.checked);
+    app.setIncludePremiumProblems((event.target as HTMLInputElement).checked);
   });
 
   // Snooze interval
@@ -80,9 +64,7 @@ function addSettingsEventHandlers() {
     "snooze-interval-input",
   ) as HTMLInputElement;
   snoozeIntervalInput.addEventListener("input", (event) => {
-    const target = event.target as HTMLInputElement;
-    app.setSnoozeInterval(target.value);
-    console.log("Snooze interval input changed:", target.value);
+    app.setSnoozeInterval((event.target as HTMLInputElement).value);
   });
 
   // Rest interval
@@ -90,9 +72,7 @@ function addSettingsEventHandlers() {
     "rest-interval-input",
   ) as HTMLInputElement;
   restIntervalInput.addEventListener("input", (event) => {
-    const target = event.target as HTMLInputElement;
-    app.setRestInterval(target.value);
-    console.log("Rest interval input changed:", target.value);
+    app.setRestInterval((event.target as HTMLInputElement).value);
   });
 
   // Whitelisted URLs
@@ -100,9 +80,7 @@ function addSettingsEventHandlers() {
     "whitelisted-urls-textarea",
   ) as HTMLTextAreaElement;
   whitelistedUrlsTextarea.addEventListener("input", (event) => {
-    const target = event.target as HTMLTextAreaElement;
-    app.setWhitelistedUrls(target.value);
-    console.log("Whitelisted URLs textarea input:", target.value);
+    app.setWhitelistedUrls((event.target as HTMLTextAreaElement).value);
   });
 
   // Redirect on success
@@ -110,27 +88,19 @@ function addSettingsEventHandlers() {
     "redirect-on-success-toggle",
   ) as HTMLInputElement;
   redirectOnSuccessToggle.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    app.setRedirectOnSuccess(target.checked);
-    console.log("Redirect on success toggle changed:", target.checked);
+    app.setRedirectOnSuccess((event.target as HTMLInputElement).checked);
   });
 
   // Show daily quote
   const showDailyQuoteToggle = document.getElementById(
     "show-daily-quote-toggle",
   ) as HTMLInputElement;
-  showDailyQuoteToggle.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    app.setShowDailyQuote(target.checked);
-    const quoted: HTMLDivElement | null = document.querySelector(".quoted");
+  showDailyQuoteToggle.addEventListener("change", async (event) => {
+    app.setShowDailyQuote((event.target as HTMLInputElement).checked);
+    const quoted = document.querySelector(".quoted") as HTMLDivElement | null;
     if (quoted) {
-      if (!target.checked) {
-        quoted.style.display = "none";
-      } else {
-        quoted.style.display = "block";
-      }
+      quoted.style.display = await app.getShowDailyQuote() ? "block" : "none";
     }
-    console.log("Show daily quote toggle changed:", target.checked);
   });
 }
 
