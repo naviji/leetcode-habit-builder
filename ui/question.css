@@ -10,6 +10,7 @@
     --color-green: #00b8a3;
     --color-red: #ff375f;
     --color-medium: #ffc01e;
+    padding: 0 2em;
 }
 
 .question__count-current {
@@ -25,6 +26,15 @@
     font-weight: bold;
     font-size: 1.5rem;
     text-decoration: underline;
+
+    /* To prevent text overflow and streak and progress bar moving around */
+    height: 3em;
+    overflow: hidden;
+    
+    /* To center the text */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .question__title a {
