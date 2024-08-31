@@ -24,6 +24,7 @@ interface MyApi {
   setIncludePremiumProblems(value: boolean): Promise<void>;
   setSnoozeInterval(value: string): Promise<void>;
   setRestInterval(value: string): Promise<void>;
+  setWhitelistedUrls(value: string): void;
 
   enableRedirects(): void;
   disableRedirects(): void;
@@ -39,6 +40,7 @@ interface MyApi {
   getIncludePremiumProblems(): Promise<boolean>;
   getSnoozeInterval(): Promise<string>;
   getRestInterval(): Promise<string>;
+  getWhitelistedUrls(): Promise<string>;
 
   render(): void;
   
@@ -55,6 +57,8 @@ class myApi implements MyApi {
   private includePremiumProblems : boolean = false
   private snoozeInterval: number = 38
   private restInterval: number = 29
+  private whitelistedUrls: string = ""
+
 
   render() {
     render()
@@ -62,6 +66,14 @@ class myApi implements MyApi {
 
   async getIncludePremiumProblems () {
     return this.includePremiumProblems
+  }
+
+  async setWhitelistedUrls(value: string): Promise<void> {
+    this.whitelistedUrls = value
+  }
+
+  async getWhitelistedUrls(): Promise<string> {
+    return this.whitelistedUrls
   }
 
   async setSnoozeInterval (value: string) {
@@ -263,9 +275,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // }
 
 function addSettingsEventHandlers() {
-  const whitelistedUrlsTextarea = document.getElementById(
-    "whitelisted-urls-textarea",
-  ) as HTMLTextAreaElement;
 
   const redirectOnSuccessDiv = document.getElementById(
     "redirect-on-success",
@@ -366,8 +375,12 @@ function addSettingsEventHandlers() {
   });
 
   // Whitelisted URLs
+  const whitelistedUrlsTextarea = document.getElementById(
+    "whitelisted-urls-textarea",
+  ) as HTMLTextAreaElement;
   whitelistedUrlsTextarea.addEventListener("input", (event) => {
     const target = event.target as HTMLTextAreaElement;
+    api.setWhitelistedUrls(target.value);
     console.log("Whitelisted URLs textarea input:", target.value);
   });
 
@@ -544,6 +557,13 @@ async function render(): Promise<void> {
   ) as HTMLInputElement;
   if (restIntervalInput) {
     restIntervalInput.value = await api.getRestInterval();
+  }
+
+  const whitelistedUrlsTextarea = document.getElementById(
+    "whitelisted-urls-textarea",
+  ) as HTMLTextAreaElement;
+  if (whitelistedUrlsTextarea) {
+    whitelistedUrlsTextarea.value = await api.getWhitelistedUrls();
   }
 
 
