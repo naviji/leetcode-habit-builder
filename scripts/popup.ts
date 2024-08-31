@@ -1,23 +1,17 @@
 import { questions, questionInfo } from "./data.js";
 import { Question, QuestionBankEnum } from "../types/questions.js";
+import browserNavigator from "./browserNavigator.js";
+import { Navigator } from "../types/navigator.js";
+import { StorageEngine } from "../types/storageEngine.js";
+import localStorageEngine from "./localStorageEngine.js";
 
-const browser = {
-  openTab: (url: string) => {
-    window.open(url, "_blank");
-  },
-};
-
-// const browserReal = {
-//   openTab: (url: string) => {
-//     chrome.tabs.create({ url: url });
-//   }
-// }
 
 interface MyApi {
-  // problem: Question | null,
+ 
   skip(): void;
   snooze(): void;
-  chooseProblemList(list: QuestionBankEnum): Promise<void>;
+  init(): Promise<void>;
+  chooseProblemFromList(list: QuestionBankEnum): Promise<void>;
   setProblemsPerDay(value: string): void;
   setIncludePremiumProblems(value: boolean): Promise<void>;
   setSnoozeInterval(value: string): Promise<void>;
@@ -43,8 +37,9 @@ interface MyApi {
   getWhitelistedUrls(): Promise<string>;
   getRedirectOnSuccess(): Promise<boolean>;
   getShowDailyQuote(): Promise<boolean>;
+  getProblemSet(): Promise<QuestionBankEnum>;
 
-  render(): void;
+  openTab(url: string): void;
 }
 
 class myApi implements MyApi {
@@ -60,6 +55,43 @@ class myApi implements MyApi {
   private whitelistedUrls: string = "";
   private redirectOnSuccess: boolean = false;
   private showDailyQuote: boolean = true;
+  private nv: Navigator| null = null
+  private renderFn = () => {}
+  private db: StorageEngine
+
+  constructor (nv: Navigator, db: StorageEngine,  renderFn: () => void) {
+    this.nv = nv
+    this.db = db
+    this.renderFn = renderFn
+  }
+
+  async init(): Promise<void> {
+
+    console.log("Initializing...");
+    const currentState = await this.db.get()
+    this.problem = currentState.problems?.[0] || null;
+    this.problemSet = currentState.problemSet || QuestionBankEnum.NeetCode150;
+    if (!this.problem) {
+      api.chooseProblemFromList(this.problemSet);
+    }
+    this.problemsPerDay = currentState.problemsPerDay || 1;
+    this.problemDifficulty = currentState.problemDifficulty || null;
+    this.includePremiumProblems = currentState.includePremiumProblems || false;
+    this.snoozeInterval = currentState.snoozeInterval || 38;
+    this.restInterval = currentState.restInterval || 29;
+    this.whitelistedUrls = currentState.whitelistedUrls || "";
+    this.redirectOnSuccess = currentState.redirectOnSuccess || false;
+    this.showDailyQuote = currentState.showDailyQuote || true;
+    this.renderFn()
+  }
+
+  async getProblemSet(): Promise<QuestionBankEnum> {
+    return this.problemSet
+  }
+
+  openTab(url: string): void {
+    this.nv?.openTab(url)
+  }
 
   async setRedirectOnSuccess(value: boolean): Promise<void> {
     this.redirectOnSuccess = value;
@@ -77,7 +109,7 @@ class myApi implements MyApi {
     return this.showDailyQuote;
   }
 
-  render() {
+  private render() {
     render();
   }
 
@@ -175,12 +207,17 @@ class myApi implements MyApi {
 
     const randomIndex = Math.floor(Math.random() * this.allProblems.length);
     this.problem = this.allProblems[randomIndex];
-    console.log("Selected question data:", this.problem);
+    await this.db.set({
+      problems: [this.problem]
+    })
     this.render();
   }
 
-  async chooseProblemList(problemSet: QuestionBankEnum) {
+  async chooseProblemFromList(problemSet: QuestionBankEnum) {
     this.problemSet = problemSet;
+    await this.db.set({
+      problemSet
+    })
     await this.chooseProblems();
     const topicSet = new Set<string>();
     this.allProblems.forEach((problem) => {
@@ -237,9 +274,9 @@ class myApi implements MyApi {
     return percentage;
   }
 
-  async getProblemUrl() {
-    // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
 
+
+  async getProblemUrl() {
     return Promise.resolve(
       "https://leetcode.com/problems/" + this.problem?.titleSlug,
     );
@@ -268,14 +305,12 @@ class myApi implements MyApi {
   }
 }
 
-const api = new myApi();
-window.myApi = api;
 
-document.addEventListener("DOMContentLoaded", () => {
-  api.chooseProblemList(QuestionBankEnum.NeetCode150);
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await api.init()
   addNavigationEventHandlers();
   addSettingsEventHandlers();
-  render();
 });
 
 // const disableTorture = document.getElementById(
@@ -330,7 +365,7 @@ function addSettingsEventHandlers() {
   problemSetSelect.addEventListener("change", (event) => {
     const target = event.target as HTMLSelectElement;
     const problemSet = target.value as QuestionBankEnum;
-    api.chooseProblemList(problemSet);
+    api.chooseProblemFromList(problemSet);
   });
 
   // Problems per day
@@ -458,7 +493,7 @@ function addNavigationEventHandlers() {
   const questionLink = document.querySelector(".question__link");
   questionLink?.addEventListener("click", async () => {
     const problemUrl = await api.getProblemUrl();
-    browser.openTab(problemUrl);
+    api.openTab(problemUrl);
   });
 
   const skipButton = document.querySelector(".buttons__button--left");
@@ -469,7 +504,6 @@ function addNavigationEventHandlers() {
 }
 
 async function render(): Promise<void> {
-  console.log("Calling Render");
   // Retrieve the last visible page
   const settingsPage = document.querySelector(".page__settings");
   if (settingsPage) {
@@ -505,12 +539,6 @@ async function render(): Promise<void> {
   if (questionTotal) {
     questionTotal.innerText = await api.getTotalQuestionCount();
   }
-
-  // const questionLink = document.querySelector(".question__link") as HTMLAnchorElement;
-  // if (questionLink) {
-  //   const problemUrl = await api.getProblemUrl();
-  //   questionLink.href = problemUrl;
-  // }
 
   const question = document.querySelector(".question") as HTMLDivElement;
   if (question) {
@@ -562,6 +590,20 @@ async function render(): Promise<void> {
       option.value = topic;
       option.text = topic;
       problemTopicsSelect.appendChild(option);
+    }
+  }
+
+
+  const problemSetSelect = document.getElementById(
+    "problem-set-select",
+  ) as HTMLSelectElement;
+  if (problemSetSelect) {
+    const problemSet = await api.getProblemSet();
+    for (const option of problemSetSelect.options) {
+      if (option.value === problemSet) {
+        option.selected = true;
+        break;
+      }
     }
   }
 
@@ -617,3 +659,6 @@ async function render(): Promise<void> {
     }
   }
 }
+
+const api = new myApi(browserNavigator, localStorageEngine, render);
+window.myApi = api;
