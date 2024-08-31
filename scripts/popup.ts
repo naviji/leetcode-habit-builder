@@ -21,6 +21,9 @@ interface MyApi {
   snooze(): void;
   chooseProblemList(list: QuestionBankEnum): Promise<void>;
   setProblemsPerDay(value: string): void;
+  setIncludePremiumProblems(value: boolean): Promise<void>;
+  setSnoozeInterval(value: string): Promise<void>;
+  setRestInterval(value: string): Promise<void>;
 
   enableRedirects(): void;
   disableRedirects(): void;
@@ -32,6 +35,10 @@ interface MyApi {
   getProblemUrl(): Promise<string>;
   getQuestionTitle(): Promise<string>;
   getQuestionDifficulty(): Promise<string>;
+  getProblemTopics(): Promise<string[]>;
+  getIncludePremiumProblems(): Promise<boolean>;
+  getSnoozeInterval(): Promise<string>;
+  getRestInterval(): Promise<string>;
 
   render(): void;
   
@@ -42,11 +49,50 @@ class myApi implements MyApi {
   private problem: Question| null = null
   private problemsPerDay = 1
   private problemDifficulty: "easy" | "medium" | "hard" | null = null
+  private problemTopics: string[] | null = null
   private allProblems: Question[] = []
   private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150
+  private includePremiumProblems : boolean = false
+  private snoozeInterval: number = 38
+  private restInterval: number = 29
 
   render() {
     render()
+  }
+
+  async getIncludePremiumProblems () {
+    return this.includePremiumProblems
+  }
+
+  async setSnoozeInterval (value: string) {
+    const interval = Number(value)
+    if (interval < 0) {
+      console.log("Error: Invalid interval")
+    } else {
+      this.snoozeInterval = Number(value)
+    }
+  }
+
+  async getSnoozeInterval () {
+    return this.snoozeInterval.toString()
+  }
+
+  async setRestInterval (value: string) {
+    const interval = Number(value)
+    if (interval < 0) {
+      console.log("Error: Invalid interval")
+    } else {
+      this.restInterval = Number(value)
+    }
+  }
+
+  async getRestInterval () {
+    return this.restInterval.toString()
+  }
+
+  async setIncludePremiumProblems (value: boolean) {
+    this.includePremiumProblems = value
+    await this.chooseProblems()
   }
 
   async setProblemsPerDay (value: string) {
@@ -78,6 +124,11 @@ class myApi implements MyApi {
       const difficulty = capitalizeFirstCharacter(this.problemDifficulty)  
       this.allProblems = this.allProblems.filter(problem => problem.difficulty === difficulty)
     }
+
+    if (!this.includePremiumProblems) {
+      this.allProblems = this.allProblems.filter(problem => problem.isPaidOnly === false)
+    }
+
     const randomIndex = Math.floor(Math.random() * this.allProblems.length);
     this.problem = this.allProblems[randomIndex];
     console.log("Selected question data:", this.problem)
@@ -87,7 +138,18 @@ class myApi implements MyApi {
   async chooseProblemList (problemSet: QuestionBankEnum) {
     this.problemSet = problemSet
     await this.chooseProblems()
+    const topicSet = new Set<string>();
+    this.allProblems.forEach(problem => {
+      problem.topicTags.forEach(tag => {
+        topicSet.add(tag.name)
+      })
+    })
+    this.problemTopics = Array.from(topicSet)
+  }
 
+  async getProblemTopics() {
+    if (!this.problemTopics) return ['All topics']
+    return this.problemTopics
   }
 
   skip () {
@@ -201,41 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // }
 
 function addSettingsEventHandlers() {
-
-
-
-
-
-
-  const problemTopicsSelect = document.getElementById(
-    "problem-topics-select",
-  ) as HTMLSelectElement;
-  const problemTopicsTextarea = document.getElementById(
-    "problem-topics-textarea",
-  ) as HTMLTextAreaElement;
-
-  const includeSolvedProblemsDiv = document.getElementById(
-    "include-solved-problems",
-  ) as HTMLElement;
-  const includeSolvedProblemsToggle = document.getElementById(
-    "include-solved-problems-toggle",
-  ) as HTMLInputElement;
-
-  const includePremiumProblemsDiv = document.getElementById(
-    "include-premium-problems",
-  ) as HTMLElement;
-  const includePremiumProblemsToggle = document.getElementById(
-    "include-premium-problems-toggle",
-  ) as HTMLInputElement;
-
-  const snoozeIntervalInput = document.getElementById(
-    "snooze-interval-input",
-  ) as HTMLInputElement;
-
-  const restIntervalInput = document.getElementById(
-    "rest-interval-input",
-  ) as HTMLInputElement;
-
   const whitelistedUrlsTextarea = document.getElementById(
     "whitelisted-urls-textarea",
   ) as HTMLTextAreaElement;
@@ -300,42 +327,41 @@ function addSettingsEventHandlers() {
   });
 
   // Problem topics
+  const problemTopicsSelect = document.getElementById(
+    "problem-topics-select",
+  ) as HTMLSelectElement;
   problemTopicsSelect.addEventListener("change", (event) => {
     const target = event.target as HTMLSelectElement;
     console.log("Problem topics selected:", target.value);
   });
-  problemTopicsTextarea.addEventListener("input", (event) => {
-    const target = event.target as HTMLTextAreaElement;
-    console.log("Problem topics textarea input:", target.value);
-  });
-
-  // Include solved problems
-  includeSolvedProblemsDiv.addEventListener("click", () => {
-    console.log("Include solved problems clicked");
-  });
-  includeSolvedProblemsToggle.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    console.log("Include solved problems toggle changed:", target.checked);
-  });
 
   // Include premium problems
-  includePremiumProblemsDiv.addEventListener("click", () => {
-    console.log("Include premium problems clicked");
-  });
+  const includePremiumProblemsToggle = document.getElementById(
+    "include-premium-problems-toggle",
+  ) as HTMLInputElement;
   includePremiumProblemsToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
+    api.setIncludePremiumProblems(target.checked);
     console.log("Include premium problems toggle changed:", target.checked);
   });
 
   // Snooze interval
+  const snoozeIntervalInput = document.getElementById(
+    "snooze-interval-input",
+  ) as HTMLInputElement;
   snoozeIntervalInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
+    api.setSnoozeInterval(target.value);
     console.log("Snooze interval input changed:", target.value);
   });
 
   // Rest interval
+  const restIntervalInput = document.getElementById(
+    "rest-interval-input",
+  ) as HTMLInputElement;
   restIntervalInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
+    api.setRestInterval(target.value);
     console.log("Rest interval input changed:", target.value);
   });
 
@@ -475,5 +501,50 @@ async function render(): Promise<void> {
   if (questionName) {
     questionName.innerText = await api.getQuestionTitle();
   }
+
+  const problemTopicsSelect = document.getElementById(
+    "problem-topics-select",
+  ) as HTMLSelectElement;
+  if (problemTopicsSelect) {
+    // Delete all exisitng options first
+    while (problemTopicsSelect.options.length > 0) {
+      problemTopicsSelect.remove(0);
+    }
+
+    const option = document.createElement("option");
+    option.value = 'all';
+    option.text = 'All topics';
+    problemTopicsSelect.appendChild(option);
+
+    const problemTopics = await api.getProblemTopics();
+    for (const topic of problemTopics) {
+      const option = document.createElement("option");
+      option.value = topic;
+      option.text = topic;
+      problemTopicsSelect.appendChild(option);
+    }
+  }
+
+  const includePremiumProblemsToggle = document.getElementById(
+    "include-premium-problems-toggle",
+  ) as HTMLInputElement;
+  if (includePremiumProblemsToggle) {
+    includePremiumProblemsToggle.checked = await api.getIncludePremiumProblems();
+  }
+
+  const snoozeIntervalInput = document.getElementById(
+    "snooze-interval-input",
+  ) as HTMLInputElement;
+  if (snoozeIntervalInput) {
+    snoozeIntervalInput.value = await api.getSnoozeInterval();
+  }
+
+  const restIntervalInput = document.getElementById(
+    "rest-interval-input",
+  ) as HTMLInputElement;
+  if (restIntervalInput) {
+    restIntervalInput.value = await api.getRestInterval();
+  }
+
 
 }
