@@ -1,377 +1,14 @@
-import { questions, questionInfo } from "./data.js";
-import { Question, QuestionBankEnum } from "../types/questions.js";
+import { QuestionBankEnum } from "../types/questions.js";
 import browserNavigator from "./browserNavigator.js";
-import { Navigator } from "../types/navigator.js";
-import { StorageEngine } from "../types/storageEngine.js";
 import localStorageEngine from "./localStorageEngine.js";
-
-
-interface MyApi {
- 
-  skip(): void;
-  snooze(): void;
-  init(): Promise<void>;
-  chooseProblemFromList(list: QuestionBankEnum): Promise<void>;
-  setProblemsPerDay(value: string): void;
-  setIncludePremiumProblems(value: boolean): Promise<void>;
-  setSnoozeInterval(value: string): Promise<void>;
-  setRestInterval(value: string): Promise<void>;
-  setWhitelistedUrls(value: string): Promise<void>;
-  setRedirectOnSuccess(value: boolean): Promise<void>;
-  setShowDailyQuote(value: boolean): Promise<void>;
-
-  enableRedirects(): void;
-  disableRedirects(): void;
-  getDailyQuote(): Promise<string>;
-  getCurrQuestionNumber(): Promise<string>;
-  getTotalQuestionCount(): Promise<string>;
-  getStreakCount(): Promise<string>;
-  getCompletionPercentage(): Promise<string>;
-  getProblemUrl(): Promise<string>;
-  getQuestionTitle(): Promise<string>;
-  getQuestionDifficulty(): Promise<string>;
-  getProblemTopics(): Promise<string[]>;
-  getIncludePremiumProblems(): Promise<boolean>;
-  getSnoozeInterval(): Promise<string>;
-  getRestInterval(): Promise<string>;
-  getWhitelistedUrls(): Promise<string>;
-  getRedirectOnSuccess(): Promise<boolean>;
-  getShowDailyQuote(): Promise<boolean>;
-  getProblemSet(): Promise<QuestionBankEnum>;
-  getProblemsPerDay(): Promise<string>;
-
-  openTab(url: string): void;
-}
-
-class myApi implements MyApi {
-  private problems: Question[] | null = null;
-  private problemsPerDay: number;
-  private problemDifficulty: "easy" | "medium" | "hard" | null = null;
-  private problemTopics: string[] | null = null;
-  private allProblems: Question[] = [];
-  private problemSet: QuestionBankEnum = QuestionBankEnum.NeetCode150;
-  private includePremiumProblems: boolean;
-  private snoozeInterval: number;
-  private restInterval: number;
-  private problemsSolved: number;
-  private whitelistedUrls: string;
-  private redirectOnSuccess: boolean;
-  private showDailyQuote: boolean;
-
-  private nv: Navigator| null = null
-  private renderFn = () => {}
-  private db: StorageEngine
-
-  constructor (nv: Navigator, db: StorageEngine,  renderFn: () => void) {
-    this.nv = nv
-    this.db = db
-    this.renderFn = renderFn
-
-    // Set defaults
-    this.problemsPerDay = 2;
-    this.problemsSolved = 0;
-    this.includePremiumProblems = false;
-    this.snoozeInterval = 38;
-    this.restInterval = 29;
-    this.whitelistedUrls = ""
-    this.redirectOnSuccess = true
-    this.showDailyQuote = true
-  }
-
-  async init(): Promise<void> {
-
-    console.log("Initializing...");
-    const currentState = await this.db.get()
-    this.problems = currentState.problems || null;
-    this.problemSet = currentState.problemSet || QuestionBankEnum.NeetCode150;
-    this.problemsPerDay = currentState.problemsPerDay || this.problemsPerDay;
-    this.problemsSolved = currentState.problemsSolved || this.problemsSolved;
-    this.problemDifficulty = currentState.problemDifficulty || this.problemDifficulty;
-    this.includePremiumProblems = currentState.includePremiumProblems || this.includePremiumProblems;
-    this.snoozeInterval = currentState.snoozeInterval || this.snoozeInterval;
-    this.restInterval = currentState.restInterval || this.restInterval;
-    this.whitelistedUrls = currentState.whitelistedUrls || this.whitelistedUrls;
-    this.redirectOnSuccess = currentState.redirectOnSuccess || this.redirectOnSuccess;
-    this.showDailyQuote = currentState.showDailyQuote || this.showDailyQuote;
-
-    if (!this.problems) {
-      api.chooseProblemFromList(this.problemSet);
-    }
-    
-    this.renderFn()
-  }
-
-  async getProblemSet(): Promise<QuestionBankEnum> {
-    return this.problemSet
-  }
-
-  openTab(url: string): void {
-    this.nv?.openTab(url)
-  }
-
-  async setRedirectOnSuccess(value: boolean): Promise<void> {
-    this.redirectOnSuccess = value;
-  }
-
-  async getRedirectOnSuccess(): Promise<boolean> {
-    return this.redirectOnSuccess;
-  }
-
-  async setShowDailyQuote(value: boolean): Promise<void> {
-    this.showDailyQuote = value;
-  }
-
-  async getShowDailyQuote(): Promise<boolean> {
-    return this.showDailyQuote;
-  }
-
-  private render() {
-    render();
-  }
-
-  async getIncludePremiumProblems() {
-    return this.includePremiumProblems;
-  }
-
-  async setWhitelistedUrls(value: string): Promise<void> {
-    this.whitelistedUrls = value;
-  }
-
-  async getWhitelistedUrls(): Promise<string> {
-    return this.whitelistedUrls;
-  }
-
-  async setSnoozeInterval(value: string) {
-    const interval = Number(value);
-    if (interval < 0) {
-      console.log("Error: Invalid interval");
-    } else {
-      this.snoozeInterval = Number(value);
-    }
-  }
-
-  async getSnoozeInterval() {
-    return this.snoozeInterval.toString();
-  }
-
-  async setRestInterval(value: string) {
-    const interval = Number(value);
-    if (interval < 0) {
-      console.log("Error: Invalid interval");
-    } else {
-      this.restInterval = Number(value);
-    }
-  }
-
-  async getRestInterval() {
-    return this.restInterval.toString();
-  }
-
-  async setIncludePremiumProblems(value: boolean) {
-    this.includePremiumProblems = value;
-    await this.chooseProblems();
-  }
-
-  async setProblemsPerDay(value: string) {
-    if (Number(value) < 1) {
-      console.log("Error: Invalid problems per day");
-    }
-    this.problemsPerDay = Number(value);
-    this.chooseProblems()
-    this.render();
-  }
-
-  async getProblemsPerDay() {
-    return this.problemsPerDay.toString();
-  }
-
-  async setProblemDifficulty(difficulty: string) {
-    if (
-      difficulty === "easy" ||
-      difficulty === "medium" ||
-      difficulty === "hard"
-    ) {
-      this.problemDifficulty = difficulty;
-      await this.chooseProblems();
-    } else {
-      throw new Error("Invalid difficulty");
-    }
-    // Add render
-  }
-
-  private async chooseProblems() {
-    const questionsInSet = questions[this.problemSet];
-    this.allProblems = questionsInSet.map(
-      (problemSlug) => questionInfo[problemSlug].data.question,
-    );
-
-    function capitalizeFirstCharacter(s: string) {
-      if (!s) return ""; // Check if the string is empty
-      return s.charAt(0).toUpperCase() + s.slice(1);
-    }
-
-    if (this.problemDifficulty) {
-      const difficulty = capitalizeFirstCharacter(this.problemDifficulty);
-      this.allProblems = this.allProblems.filter(
-        (problem) => problem.difficulty === difficulty,
-      );
-    }
-
-    if (!this.includePremiumProblems) {
-      this.allProblems = this.allProblems.filter(
-        (problem) => problem.isPaidOnly === false,
-      );
-    }
-
-    let randomIndex = Math.floor(Math.random() * this.allProblems.length);
-    this.problems = []
-    for (let i = 0; i < this.problemsPerDay; i++) {
-      this.problems.push(this.allProblems[randomIndex]);
-      randomIndex = Math.floor(Math.random() * this.allProblems.length);
-    }
-    await this.db.set({
-      problems: this.problems
-    })
-    this.render();
-  }
-
-  async chooseProblemFromList(problemSet: QuestionBankEnum) {
-    this.problemSet = problemSet;
-    await this.db.set({
-      problemSet
-    })
-    await this.chooseProblems();
-    const topicSet = new Set<string>();
-    this.allProblems.forEach((problem) => {
-      problem.topicTags.forEach((tag) => {
-        topicSet.add(tag.name);
-      });
-    });
-    this.problemTopics = Array.from(topicSet);
-  }
-
-  async getProblemTopics() {
-    if (!this.problemTopics) return ["All topics"];
-    return this.problemTopics;
-  }
-
-  // Using an arrow function to capture `this`
-  skip = async () => {
-    await this.chooseProblems()
-  }
-
-  snooze() {
-    // chrome.runtime.sendMessage({ action: "snoozeQuestion" });
-    console.log("Snoozed");
-  }
-
-  async getDailyQuote() {
-    return "A leetcode a day keeps the doctor away";
-  }
-
-  async getCurrQuestionNumber() {
-    return (this.problemsSolved + 1).toString()
-  }
-
-  async getTotalQuestionCount() {
-    // const { problem }: { problem?: Problem } = await chrome.storage.sync.get("problem");
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    return this.problems.length.toString();
-  }
-
-  async getStreakCount() {
-    // const { streak }: { streak?: number } = await chrome.storage.sync.get("streak");
-    return "122";
-  }
-
-  async getCompletionPercentage() {
-    const percentage = (
-      (Number(await this.getCurrQuestionNumber()) /
-        Number(await this.getTotalQuestionCount())) *
-      100
-    ).toString();
-    return percentage;
-  }
-
-
-
-  async getProblemUrl() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    return Promise.resolve(
-      "https://leetcode.com/problems/" + this.problems[this.problemsSolved].titleSlug
-    );
-  }
-
-  enableRedirects() {
-    console.log("Enabling Redirects");
-    // chrome.runtime.sendMessage({ action: "startRedirect" });
-    // chrome.runtime.sendMessage({ action: "pauseTheGrind" });
-    //
-  }
-
-  disableRedirects() {
-    console.log("Disabling Redirects");
-    // chrome.runtime.sendMessage({ action: "stopRedirect" });
-    // chrome.runtime.sendMessage({ action: "resumeTheGrind" });
-  }
-
-  async getQuestionTitle() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    return this.problems[this.problemsSolved].title || "";
-  }
-
-  async getQuestionDifficulty() {
-    if (!this.problems?.length) {
-      throw new Error("No problems found");
-    }
-    const problem = this.problems[this.problemsSolved];
-    console.log("Difficulty: ", problem.difficulty.toLowerCase());
-    return problem.difficulty.toLowerCase() || "";
-  }
-}
-
+import { Application } from "./app.js";
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await api.init()
+  await app.init()
   addNavigationEventHandlers();
   addSettingsEventHandlers();
 });
-
-// const disableTorture = document.getElementById(
-//   "disable-torture-checkbox",
-// ) as HTMLInputElement | null;
-// if (disableTorture) {
-//   const { disabled }: { disabled?: boolean } =
-//     await chrome.storage.sync.get("disabled");
-//   if (disabled) {
-//     disableTorture.checked = disabled;
-//   }
-
-//   disableTorture.addEventListener("change", async function () {
-//     await chrome.storage.sync.set({ disabled: !!disableTorture.checked });
-//     if (disableTorture.checked) {
-//       chrome.runtime.sendMessage({ action: "stopRedirect" });
-//     } else {
-//       chrome.runtime.sendMessage({ action: "startRedirect" });
-//     }
-//   });
-// }
-
-// const problemTitle = document.getElementById("question");
-// if (problemTitle) {
-//   const { problem }: { problem?: Problem } =
-//     await chrome.storage.sync.get("problem");
-//   if (problem) {
-//     problemTitle.textContent = problem.text;
-//   }
-// }
 
 function addSettingsEventHandlers() {
   // Toggle ON / OFF
@@ -382,9 +19,9 @@ function addSettingsEventHandlers() {
     const target = event.target as HTMLInputElement;
     console.log("Pause toggle changed:", target.checked);
     if (target.checked) {
-      api.enableRedirects();
+      app.enableRedirects();
     } else {
-      api.disableRedirects();
+      app.disableRedirects();
     }
   });
 
@@ -396,7 +33,7 @@ function addSettingsEventHandlers() {
   problemSetSelect.addEventListener("change", (event) => {
     const target = event.target as HTMLSelectElement;
     const problemSet = target.value as QuestionBankEnum;
-    api.chooseProblemFromList(problemSet);
+    app.chooseProblemFromList(problemSet);
   });
 
   // Problems per day
@@ -405,7 +42,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   problemsPerDayInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setProblemsPerDay(target.value);
+    app.setProblemsPerDay(target.value);
     console.log("Problems per day input changed:", target.value);
   });
 
@@ -415,7 +52,7 @@ function addSettingsEventHandlers() {
   ) as HTMLSelectElement;
   problemDifficultySelect.addEventListener("change", (event) => {
     const target = event.target as HTMLSelectElement;
-    api.setProblemDifficulty(target.value);
+    app.setProblemDifficulty(target.value);
     console.log("Problem difficulty selected:", target.value);
   });
 
@@ -434,7 +71,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   includePremiumProblemsToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setIncludePremiumProblems(target.checked);
+    app.setIncludePremiumProblems(target.checked);
     console.log("Include premium problems toggle changed:", target.checked);
   });
 
@@ -444,7 +81,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   snoozeIntervalInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setSnoozeInterval(target.value);
+    app.setSnoozeInterval(target.value);
     console.log("Snooze interval input changed:", target.value);
   });
 
@@ -454,7 +91,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   restIntervalInput.addEventListener("input", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setRestInterval(target.value);
+    app.setRestInterval(target.value);
     console.log("Rest interval input changed:", target.value);
   });
 
@@ -464,7 +101,7 @@ function addSettingsEventHandlers() {
   ) as HTMLTextAreaElement;
   whitelistedUrlsTextarea.addEventListener("input", (event) => {
     const target = event.target as HTMLTextAreaElement;
-    api.setWhitelistedUrls(target.value);
+    app.setWhitelistedUrls(target.value);
     console.log("Whitelisted URLs textarea input:", target.value);
   });
 
@@ -474,7 +111,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   redirectOnSuccessToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setRedirectOnSuccess(target.checked);
+    app.setRedirectOnSuccess(target.checked);
     console.log("Redirect on success toggle changed:", target.checked);
   });
 
@@ -484,7 +121,7 @@ function addSettingsEventHandlers() {
   ) as HTMLInputElement;
   showDailyQuoteToggle.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
-    api.setShowDailyQuote(target.checked);
+    app.setShowDailyQuote(target.checked);
     const quoted: HTMLDivElement | null = document.querySelector(".quoted");
     if (quoted) {
       if (!target.checked) {
@@ -523,18 +160,18 @@ function addNavigationEventHandlers() {
 
   const questionLink = document.querySelector(".question__link");
   questionLink?.addEventListener("click", async () => {
-    const problemUrl = await api.getProblemUrl();
-    api.openTab(problemUrl);
+    const problemUrl = await app.getProblemUrl();
+    app.openTab(problemUrl);
   });
 
   const skipButton = document.querySelector(".buttons__button--left");
-  skipButton?.addEventListener("click", api.skip);
+  skipButton?.addEventListener("click", app.skip);
 
   const snoozeButton = document.querySelector(".buttons__button--right");
-  snoozeButton?.addEventListener("click", api.snooze);
+  snoozeButton?.addEventListener("click", app.snooze);
 }
 
-async function render(): Promise<void> {
+export async function render(): Promise<void> {
   // Retrieve the last visible page
   const settingsPage = document.querySelector(".page__settings");
   if (settingsPage) {
@@ -552,7 +189,7 @@ async function render(): Promise<void> {
   // Set the daily quote
   const quoted: HTMLDivElement | null = document.querySelector(".quoted");
   if (quoted) {
-    quoted.innerText = await api.getDailyQuote();
+    quoted.innerText = await app.getDailyQuote();
   }
 
   // Set current question number
@@ -560,7 +197,7 @@ async function render(): Promise<void> {
     ".question__count-current",
   );
   if (questionCount) {
-    questionCount.innerText = await api.getCurrQuestionNumber();
+    questionCount.innerText = await app.getCurrQuestionNumber();
   }
 
   // Set total question count
@@ -568,7 +205,7 @@ async function render(): Promise<void> {
     ".question__count-total",
   );
   if (questionTotal) {
-    questionTotal.innerText = await api.getTotalQuestionCount();
+    questionTotal.innerText = await app.getTotalQuestionCount();
   }
 
   const question = document.querySelector(".question") as HTMLDivElement;
@@ -576,14 +213,14 @@ async function render(): Promise<void> {
     question.classList.remove(`question--easy`);
     question.classList.remove(`question--medium`);
     question.classList.remove(`question--hard`);
-    question.classList.add(`question--${await api.getQuestionDifficulty()}`);
+    question.classList.add(`question--${await app.getQuestionDifficulty()}`);
   }
 
   // Set streak count
   const streakCount: HTMLSpanElement | null =
     document.querySelector(".streak__count");
   if (streakCount) {
-    streakCount.innerText = await api.getStreakCount();
+    streakCount.innerText = await app.getStreakCount();
   }
 
   // Set progress bar width
@@ -591,14 +228,14 @@ async function render(): Promise<void> {
     ".progressBar__progress",
   );
   if (progressBar) {
-    progressBar.style.width = `${await api.getCompletionPercentage()}%`;
+    progressBar.style.width = `${await app.getCompletionPercentage()}%`;
   }
 
   // Get question name
   const questionName: HTMLAnchorElement | null =
     document.querySelector(".question__link");
   if (questionName) {
-    questionName.innerText = await api.getQuestionTitle();
+    questionName.innerText = await app.getQuestionTitle();
   }
 
   const problemTopicsSelect = document.getElementById(
@@ -615,7 +252,7 @@ async function render(): Promise<void> {
     option.text = "All topics";
     problemTopicsSelect.appendChild(option);
 
-    const problemTopics = await api.getProblemTopics();
+    const problemTopics = await app.getProblemTopics();
     for (const topic of problemTopics) {
       const option = document.createElement("option");
       option.value = topic;
@@ -629,7 +266,7 @@ async function render(): Promise<void> {
     "problem-set-select",
   ) as HTMLSelectElement;
   if (problemSetSelect) {
-    const problemSet = await api.getProblemSet();
+    const problemSet = await app.getProblemSet();
     for (const option of problemSetSelect.options) {
       if (option.value === problemSet) {
         option.selected = true;
@@ -643,42 +280,42 @@ async function render(): Promise<void> {
   ) as HTMLInputElement;
   if (includePremiumProblemsToggle) {
     includePremiumProblemsToggle.checked =
-      await api.getIncludePremiumProblems();
+      await app.getIncludePremiumProblems();
   }
 
   const snoozeIntervalInput = document.getElementById(
     "snooze-interval-input",
   ) as HTMLInputElement;
   if (snoozeIntervalInput) {
-    snoozeIntervalInput.value = await api.getSnoozeInterval();
+    snoozeIntervalInput.value = await app.getSnoozeInterval();
   }
 
   const restIntervalInput = document.getElementById(
     "rest-interval-input",
   ) as HTMLInputElement;
   if (restIntervalInput) {
-    restIntervalInput.value = await api.getRestInterval();
+    restIntervalInput.value = await app.getRestInterval();
   }
 
   const whitelistedUrlsTextarea = document.getElementById(
     "whitelisted-urls-textarea",
   ) as HTMLTextAreaElement;
   if (whitelistedUrlsTextarea) {
-    whitelistedUrlsTextarea.value = await api.getWhitelistedUrls();
+    whitelistedUrlsTextarea.value = await app.getWhitelistedUrls();
   }
 
   const redirectOnSuccessToggle = document.getElementById(
     "redirect-on-success-toggle",
   ) as HTMLInputElement;
   if (redirectOnSuccessToggle) {
-    redirectOnSuccessToggle.checked = await api.getRedirectOnSuccess();
+    redirectOnSuccessToggle.checked = await app.getRedirectOnSuccess();
   }
 
   const showDailyQuoteToggle = document.getElementById(
     "show-daily-quote-toggle",
   ) as HTMLInputElement;
   if (showDailyQuoteToggle) {
-    const showQuote = await api.getShowDailyQuote();
+    const showQuote = await app.getShowDailyQuote();
     showDailyQuoteToggle.checked = showQuote;
     const quoted: HTMLDivElement | null = document.querySelector(".quoted");
     if (quoted) {
@@ -696,10 +333,10 @@ async function render(): Promise<void> {
     "problems-per-day-input",
   ) as HTMLInputElement;
   if (problemsPerDayInput) {
-    problemsPerDayInput.value = await api.getProblemsPerDay();
+    problemsPerDayInput.value = await app.getProblemsPerDay();
   }
 
 }
 
-const api = new myApi(browserNavigator, localStorageEngine, render);
-window.myApi = api;
+export const app = new Application(browserNavigator, localStorageEngine, render);
+window.myApi = app;
