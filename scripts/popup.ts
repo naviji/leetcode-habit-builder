@@ -136,10 +136,10 @@ function addNavigationEventHandlers() {
   });
 
   const skipButton = document.querySelector(".buttons__button--left");
-  skipButton?.addEventListener("click", app.skip);
+  skipButton?.addEventListener("click", () => { app.skip(); });
 
   const snoozeButton = document.querySelector(".buttons__button--right");
-  snoozeButton?.addEventListener("click", app.snooze);
+  snoozeButton?.addEventListener("click", () => { app.snooze(); });
 }
 
 export async function render(): Promise<void> {
@@ -335,17 +335,17 @@ db.set({
       hasVideoSolution: false,
     },
   ],
-  problemSet: QuestionBankEnum.NeetCode150,
+  problemSet: QuestionBankEnum.NeetCodeAll,
   problemsPerDay: 1,
   problemsSolved: 0,
   problemDifficulty: null,
+  problemTopic: null,
   includePremiumProblems: false,
   snoozeInterval: 12,
   restInterval: 24,
   whitelistedUrls: "",
   redirectOnSuccess: true,
   showDailyQuote: true,
-  problemTopic: null,
 });
 
 export const app = new Application(browserNavigator, db, render);

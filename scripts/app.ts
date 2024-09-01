@@ -225,9 +225,9 @@ export class Application implements App {
   }
 
   // Using an arrow function to capture `this`
-  skip = async () => {
+  async skip() {
     await this.chooseProblems();
-  };
+  }
 
   snooze() {
     console.log("Snoozed");
