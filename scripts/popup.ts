@@ -136,10 +136,14 @@ function addNavigationEventHandlers() {
   });
 
   const skipButton = document.querySelector(".buttons__button--left");
-  skipButton?.addEventListener("click", () => { app.skip(); });
+  skipButton?.addEventListener("click", () => {
+    app.skip();
+  });
 
   const snoozeButton = document.querySelector(".buttons__button--right");
-  snoozeButton?.addEventListener("click", () => { app.snooze(); });
+  snoozeButton?.addEventListener("click", () => {
+    app.snooze();
+  });
 }
 
 export async function render(): Promise<void> {
@@ -207,6 +211,14 @@ export async function render(): Promise<void> {
     document.querySelector(".question__link");
   if (questionName) {
     questionName.innerText = await app.getProblemTitle();
+  }
+
+  // Toggle ON / OFF
+  const pauseToggle = document.getElementById(
+    "pause-toggle",
+  ) as HTMLInputElement;
+  if (pauseToggle) {
+    pauseToggle.checked = await app.getRedirectsEnabled();
   }
 
   const problemTopicsSelect = document.getElementById(
@@ -346,6 +358,7 @@ db.set({
   whitelistedUrls: "",
   redirectOnSuccess: true,
   showDailyQuote: true,
+  redirectsEnabled: true,
 });
 
 export const app = new Application(browserNavigator, db, render);

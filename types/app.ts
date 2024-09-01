@@ -36,6 +36,7 @@ export interface App {
   getProblemSet(): Promise<QuestionBankEnum>;
   getProblemsPerDay(): Promise<string>;
   getProblemTopic(): Promise<string>;
+  getRedirectsEnabled(): Promise<boolean>;
 
   openTab(url: string): void;
 }

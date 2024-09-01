@@ -14,4 +14,5 @@ export interface State {
     redirectOnSuccess?: boolean;
     showDailyQuote?: boolean;
     problemTopic?: string | null;
+    redirectsEnabled?: boolean;
 }

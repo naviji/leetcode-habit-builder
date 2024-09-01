@@ -21,6 +21,10 @@ export class Application implements App {
 
   async init(): Promise<void> {
     this.loadProblemInfo();
+    const { redirectsEnabled } = await this.db.get();
+    if (redirectsEnabled) {
+      this.setRedirectsEnabled(true);
+    }
     this.renderFn();
   }
 
@@ -54,6 +58,11 @@ export class Application implements App {
 
   async getShowDailyQuote(): Promise<boolean> {
     return (await this.db.get()).showDailyQuote as boolean;
+  }
+
+  async getRedirectsEnabled (): Promise<boolean> {
+    const { redirectsEnabled } = await this.db.get();
+    return !!redirectsEnabled
   }
 
   private render() {
@@ -224,7 +233,6 @@ export class Application implements App {
     });
   }
 
-  // Using an arrow function to capture `this`
   async skip() {
     await this.chooseProblems();
   }
@@ -269,7 +277,8 @@ export class Application implements App {
   }
 
   async setRedirectsEnabled(value: boolean) {
-    console.log("Enabling Redirects", value);
+    const problem = await this.getProblemUrl();
+    this.nv?.setRedirectsEnabled(value, problem)
   }
 
   async getProblemTitle() {
