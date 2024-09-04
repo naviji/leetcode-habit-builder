@@ -46,12 +46,6 @@
   width: var(--main-width);
 }
 
-body {
-  display: flex;
-  height: var(--main-height);
-  width: calc(2 * var(--main-width));
-}
-
 .flex-container {
     display: flex;
 }

@@ -54,6 +54,7 @@
 
 .settings--list select {
     display: block;
+    width: 8em;
 }
 
 .settings--data textarea {

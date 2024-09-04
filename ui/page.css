@@ -4,6 +4,12 @@
     font-size: 1rem;
 }
 
+.page-container {
+    display: flex;
+    height: var(--main-height);
+    width: calc(2 * var(--main-width));
+  }
+
 .page__home {
     height: 100%;
     background-color: var(--main-bg);

@@ -13,221 +13,224 @@
     <link rel="stylesheet" href="page.css" />
   </head>
   <body>
-    <div class="page">
-      <div class="page__home">
-        <div class="header">
-          <h1>Leetcode Habit Builder</h1>
-          <div class="header__icon_right"></div>
-        </div>
-        <div class="quoted"></div>
-        <div class="question question--easy">
-          <div class="question__count">
-            Question
-            <span class="question__count-current"></span>
-            of
-            <span class="question__count-total"></span>
+    <div class="page-container">
+      <div class="page">
+        <div class="page__home">
+          <div class="header">
+            <h1>Leetcode Habit Builder</h1>
+            <div class="header__icon_right"></div>
           </div>
-          <div class="question__title">
-            <a class="question__link" href="javascript:void(0)"></a>
-          </div>
-        </div>
-        <div class="buttons">
-          <button class="buttons__button buttons__button--left">Skip</button>
-          <button class="buttons__button buttons__button--right">Snooze</button>
-        </div>
-
-        <div class="tracker">
-          <div class="tracker__streak">
-            <div class="streak">
-              <span class="streak__count"></span>
-              <span class="streak__label">days</span>
+          <div class="quoted"></div>
+          <div class="question question--easy">
+            <div class="question__count">
+              Question
+              <span class="question__count-current"></span>
+              of
+              <span class="question__count-total"></span>
+            </div>
+            <div class="question__title">
+              <a class="question__link" href="javascript:void(0)"></a>
             </div>
           </div>
-          <div class="tracker__progressBar">
-            <div class="progressBar">
-              <span class="progressBar__progress" style="width: 20%"></span>
+          <div class="buttons">
+            <button class="buttons__button buttons__button--left">Skip</button>
+            <button class="buttons__button buttons__button--right">Snooze</button>
+          </div>
+  
+          <div class="tracker">
+            <div class="tracker__streak">
+              <div class="streak">
+                <span class="streak__count"></span>
+                <span class="streak__label">days</span>
+              </div>
+            </div>
+            <div class="tracker__progressBar">
+              <div class="progressBar">
+                <span class="progressBar__progress" style="width: 20%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="page">
+        <div class="page__settings">
+          <div class="header header--with-back">
+            <div class="header__icon_left"></div>
+            <h1>Settings</h1>
+          </div>
+  
+          <div class="page__settings__body">
+            <div class="settings settings--toggle" id="pause-the-grind">
+              <div class="settings__body">
+                <div>
+                  <h4>Pause the grind</h4>
+                  <p>Click to disable/enable redirects</p>
+                </div>
+                <div class="settings__body__action">
+                  <input type="checkbox" id="pause-toggle" />
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--list" id="problem-sets">
+              <div class="settings__body">
+                <div>
+                  <h4>Problem sets</h4>
+                  <p>Choose the leetcode problems you'd like</p>
+                </div>
+                <div class="settings__body__action">
+                  <select id="problem-set-select">
+                    <option value="neetcodeAll">Neetcode All</option>
+                    <option value="neetcode150">Neetcode 150</option>
+                    <option value="blind75">Blind 75</option>
+                    <option value="striverSDESheet">Striver's SDE</option>
+                    <option value="striverAtoZ">Striver's A-Z</option>
+                    <option value="striver79">Striver's 79</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--number" id="problems-per-day">
+              <div class="settings__body">
+                <div>
+                  <h4>Problems per day</h4>
+                  <p>Choose the number of daily problems</p>
+                </div>
+                <div class="settings__body__action">
+                  <input min="1" value="1" type="number" id="problems-per-day-input" />
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--list" id="problem-difficulty">
+              <div class="settings__body">
+                <div>
+                  <h4>Problem difficulty</h4>
+                  <p>Choose the difficulty you'd like</p>
+                </div>
+                <div class="settings__body__action">
+                  <select id="problem-difficulty-select">
+                    <option value="all">All difficulties</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--list" id="problem-topics">
+              <div class="settings__body">
+                <div>
+                  <h4>Problem topics</h4>
+                  <p>Choose the topics you'd like</p>
+                </div>
+                <div class="settings__body__action">
+                  <select id="problem-topics-select">
+                    <option value="all">All topics</option>
+                  </select>
+                </div>
+              </div>
+              <div class="settings__data">
+                <textarea id="problem-topics-textarea"></textarea>
+              </div>
+            </div>
+          
+            <!-- TODO: Maybe take the username of the user to do this? -->
+            <!-- <div class="settings settings--toggle" id="include-solved-problems">
+              <div class="settings__body">
+                <div>
+                  <h4>Include solved problems</h4>
+                  <p>Toggle whether to ask solved problems</p>
+                </div>
+                <div class="settings__body__action">
+                  <input type="checkbox" id="include-solved-problems-toggle" />
+                </div>
+              </div>
+            </div> -->
+          
+            <div class="settings settings--toggle" id="include-premium-problems">
+              <div class="settings__body">
+                <div>
+                  <h4>Include premium problems</h4>
+                  <p>Toggle whether to ask premium problems</p>
+                </div>
+                <div class="settings__body__action">
+                  <input type="checkbox" id="include-premium-problems-toggle" />
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--number" id="snooze-interval">
+              <div class="settings__body">
+                <div>
+                  <h4>Snooze interval</h4>
+                  <p>Choose the snooze time in minutes</p>
+                </div>
+                <div class="settings__body__action">
+                  <input min="0" value="30" type="number" id="snooze-interval-input" />
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--number" id="rest-interval">
+              <div class="settings__body">
+                <div>
+                  <h4>Rest interval</h4>
+                  <p>Choose the rest time between problems in minutes</p>
+                </div>
+                <div class="settings__body__action">
+                  <input min="0" value="30" type="number" id="rest-interval-input" />
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--data" id="whitelisted-urls">
+              <div class="settings__body">
+                <div>
+                  <h4>Whitelisted URLs</h4>
+                  <p>Choose the websites you always want to allow</p>
+                </div>
+                <div class="settings__body__action"></div>
+              </div>
+              <div class="settings__data">
+                <textarea
+                  id="whitelisted-urls-textarea"
+                  placeholder="leetcode.com,google.com"
+                ></textarea>
+              </div>
+            </div>
+          
+            <div class="settings settings--toggle" id="redirect-on-success">
+              <div class="settings__body">
+                <div>
+                  <h4>Redirect on success</h4>
+                  <p>Toggle whether to redirect back on submission</p>
+                </div>
+                <div class="settings__body__action">
+                  <input type="checkbox" id="redirect-on-success-toggle" />
+                </div>
+              </div>
+            </div>
+          
+            <div class="settings settings--toggle" id="show-daily-quote">
+              <div class="settings__body">
+                <div>
+                  <h4>Show daily quote</h4>
+                  <p>Toggle whether to show quotes</p>
+                </div>
+                <div class="settings__body__action">
+                  <input type="checkbox" id="show-daily-quote-toggle" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="page">
-      <div class="page__settings">
-        <div class="header header--with-back">
-          <div class="header__icon_left"></div>
-          <h1>Settings</h1>
-        </div>
-
-        <div class="page__settings__body">
-          <div class="settings settings--toggle" id="pause-the-grind">
-            <div class="settings__body">
-              <div>
-                <h4>Pause the grind</h4>
-                <p>Click to disable/enable redirects</p>
-              </div>
-              <div class="settings__body__action">
-                <input type="checkbox" id="pause-toggle" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--list" id="problem-sets">
-            <div class="settings__body">
-              <div>
-                <h4>Problem sets</h4>
-                <p>Choose the leetcode problems you'd like</p>
-              </div>
-              <div class="settings__body__action">
-                <select id="problem-set-select">
-                  <option value="neetcodeAll">Neetcode All</option>
-                  <option value="neetcode150">Neetcode 150</option>
-                  <option value="blind75">Blind 75</option>
-                  <option value="striverSDESheet">Striver's SDE</option>
-                  <option value="striverAtoZ">Striver's A-Z</option>
-                  <option value="striver79">Striver's 79</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--number" id="problems-per-day">
-            <div class="settings__body">
-              <div>
-                <h4>Problems per day</h4>
-                <p>Choose the number of daily problems</p>
-              </div>
-              <div class="settings__body__action">
-                <input min="1" value="1" type="number" id="problems-per-day-input" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--list" id="problem-difficulty">
-            <div class="settings__body">
-              <div>
-                <h4>Problem difficulty</h4>
-                <p>Choose the difficulty you'd like</p>
-              </div>
-              <div class="settings__body__action">
-                <select id="problem-difficulty-select">
-                  <option value="all">All difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--list" id="problem-topics">
-            <div class="settings__body">
-              <div>
-                <h4>Problem topics</h4>
-                <p>Choose the topics you'd like</p>
-              </div>
-              <div class="settings__body__action">
-                <select id="problem-topics-select">
-                  <option value="all">All topics</option>
-                </select>
-              </div>
-            </div>
-            <div class="settings__data">
-              <textarea id="problem-topics-textarea"></textarea>
-            </div>
-          </div>
-        
-          <!-- TODO: Maybe take the username of the user to do this? -->
-          <!-- <div class="settings settings--toggle" id="include-solved-problems">
-            <div class="settings__body">
-              <div>
-                <h4>Include solved problems</h4>
-                <p>Toggle whether to ask solved problems</p>
-              </div>
-              <div class="settings__body__action">
-                <input type="checkbox" id="include-solved-problems-toggle" />
-              </div>
-            </div>
-          </div> -->
-        
-          <div class="settings settings--toggle" id="include-premium-problems">
-            <div class="settings__body">
-              <div>
-                <h4>Include premium problems</h4>
-                <p>Toggle whether to ask premium problems</p>
-              </div>
-              <div class="settings__body__action">
-                <input type="checkbox" id="include-premium-problems-toggle" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--number" id="snooze-interval">
-            <div class="settings__body">
-              <div>
-                <h4>Snooze interval</h4>
-                <p>Choose the snooze time in minutes</p>
-              </div>
-              <div class="settings__body__action">
-                <input min="0" value="30" type="number" id="snooze-interval-input" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--number" id="rest-interval">
-            <div class="settings__body">
-              <div>
-                <h4>Rest interval</h4>
-                <p>Choose the rest time between problems in minutes</p>
-              </div>
-              <div class="settings__body__action">
-                <input min="0" value="30" type="number" id="rest-interval-input" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--data" id="whitelisted-urls">
-            <div class="settings__body">
-              <div>
-                <h4>Whitelisted URLs</h4>
-                <p>Choose the websites you always want to allow</p>
-              </div>
-              <div class="settings__body__action"></div>
-            </div>
-            <div class="settings__data">
-              <textarea
-                id="whitelisted-urls-textarea"
-                placeholder="leetcode.com,google.com"
-              ></textarea>
-            </div>
-          </div>
-        
-          <div class="settings settings--toggle" id="redirect-on-success">
-            <div class="settings__body">
-              <div>
-                <h4>Redirect on success</h4>
-                <p>Toggle whether to redirect back on submission</p>
-              </div>
-              <div class="settings__body__action">
-                <input type="checkbox" id="redirect-on-success-toggle" />
-              </div>
-            </div>
-          </div>
-        
-          <div class="settings settings--toggle" id="show-daily-quote">
-            <div class="settings__body">
-              <div>
-                <h4>Show daily quote</h4>
-                <p>Toggle whether to show quotes</p>
-              </div>
-              <div class="settings__body__action">
-                <input type="checkbox" id="show-daily-quote-toggle" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <script type="module" src="../scripts/popup.js"></script>
 
