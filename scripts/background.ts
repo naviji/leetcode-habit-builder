@@ -49,7 +49,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       showDailyQuote: true,
       redirectsEnabled: false,
     });
-    await setRedirectRule("https://leetcode.com/problems/binary-search");
+    await setRedirectRule("https://leetcode.com/problems/binary-search/");
   } else {
     console.log("Updating");
   }

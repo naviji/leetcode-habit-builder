@@ -1,9 +1,10 @@
 // let problemUrl = ""
 // let tablId: number | null = null
 
-const RULE_ID = 4
+const RULE_ID = 1
 
 export async function setRedirectRule(redirectUrl: string) {
+  console.log("Calling setRedirectRule", redirectUrl)
   // problemUrl = redirectUrl
   const redirectRule: chrome.declarativeNetRequest.Rule = {
     id: RULE_ID,
