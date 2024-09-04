@@ -1,6 +1,7 @@
 import { QuestionBankEnum } from "../types/questions.js";
 import browserNavigator from "./browserNavigator.js";
-import LocalStorageEngine from "./localStorageEngine.js";
+import StorageEngine from "./chromeStorageEngine.js";
+// import StorageEngine from "./localStorageEngine.js";
 import { Application } from "./app.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -152,7 +153,6 @@ export async function render(): Promise<void> {
   if (settingsPage) {
     // Retrieve the state from localStorage
     const isOpen = localStorage.getItem("settingsPageOpen") === "true";
-
     // Set the initial state based on localStorage
     if (isOpen) {
       settingsPage.classList.add("isOpen");
@@ -218,7 +218,7 @@ export async function render(): Promise<void> {
     "pause-toggle",
   ) as HTMLInputElement;
   if (pauseToggle) {
-    pauseToggle.checked = await app.getRedirectsEnabled();
+    pauseToggle.checked = !(await app.getRedirectsEnabled());
   }
 
   const problemTopicsSelect = document.getElementById(
@@ -318,48 +318,7 @@ export async function render(): Promise<void> {
   }
 }
 
-const db = new LocalStorageEngine();
-db.set({
-  problems: [
-    {
-      acRate: 58.26094394474123,
-      difficulty: "Easy",
-      freqBar: null,
-      questionFrontendId: "704",
-      isFavor: false,
-      isPaidOnly: false,
-      status: null,
-      title: "Binary Search",
-      titleSlug: "binary-search",
-      topicTags: [
-        {
-          name: "Array",
-          id: "VG9waWNUYWdOb2RlOjU=",
-          slug: "array",
-        },
-        {
-          name: "Binary Search",
-          id: "VG9waWNUYWdOb2RlOjEx",
-          slug: "binary-search",
-        },
-      ],
-      hasSolution: true,
-      hasVideoSolution: false,
-    },
-  ],
-  problemSet: QuestionBankEnum.NeetCodeAll,
-  problemsPerDay: 1,
-  problemsSolved: 0,
-  problemDifficulty: null,
-  problemTopic: null,
-  includePremiumProblems: false,
-  snoozeInterval: 12,
-  restInterval: 24,
-  whitelistedUrls: "",
-  redirectOnSuccess: true,
-  showDailyQuote: true,
-  redirectsEnabled: true,
-});
 
-export const app = new Application(browserNavigator, db, render);
-window.myApi = app;
+
+const db = new StorageEngine();
+const app = new Application(browserNavigator, db, render);

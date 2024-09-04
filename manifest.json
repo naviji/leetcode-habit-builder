@@ -4,7 +4,7 @@
   "description": "An extension to force you to do some leetcode everyday",
   "version": "1.0",
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "./ui/popup.html",
     "default_icon": "images/icon.png"
   },
   "icons": {
@@ -14,7 +14,7 @@
     "128": "images/icon-128.png"
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "./scripts/background.js",
     "type": "module"
   },
   "permissions": [

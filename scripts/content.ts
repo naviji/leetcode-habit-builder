@@ -1,17 +1,15 @@
-console.log("content.js running");
 
-function checkForAcceptedSubmission() {
+console.log("Content script loaded")
+
+async function checkForAcceptedSubmission() {
   const spanElement = document.querySelector(
     'span[data-e2e-locator="submission-result"]',
   );
-  console.log("Span element:", spanElement);
   if (spanElement && spanElement.textContent === "Accepted") {
+    console.log("Successful submission detected")
     chrome.runtime.sendMessage({ action: "stopRedirect" });
   }
 }
 
-function onUrlChange() {
-  checkForAcceptedSubmission();
-}
-window.addEventListener("replacestate", onUrlChange);
-checkForAcceptedSubmission();
+window.addEventListener("replacestate", checkForAcceptedSubmission);
+

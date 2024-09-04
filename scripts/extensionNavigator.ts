@@ -5,14 +5,11 @@ const extensionNavigator: Navigator = {
     chrome.tabs.create({ url: url });
   },
   setRedirectsEnabled: (enabled: boolean, url?: string) => {
-    console.log("Enabling Redirects", enabled, url);
-    // if (enabled) {
-    //   document.body.style.border = '1px solid red'
-    //   console.log("Enabling Redirects", enabled, url);
-    // } else {
-    //   document.body.style.border = '1px solid green'
-    //   console.log("Disabling Redirects", enabled, url);
-    // }
+    if (enabled) {
+        chrome.runtime.sendMessage({ action: "startRedirect", data: { url } });
+    } else {
+        chrome.runtime.sendMessage({ action: "stopRedirect" });
+    }
   }
 };
 

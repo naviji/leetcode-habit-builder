@@ -49,7 +49,7 @@
 
 .settings--number input[type="number"] {
     display: block;
-    width: 2.5em;
+    width: 3em;
 }
 
 .settings--list select {
@@ -58,10 +58,6 @@
 
 .settings--data textarea {
     display: block;
-}
-
-.settings--data textarea::placeholder{
-    /* white-space: pre-wrap; */
 }
 
 .settings + .settings {

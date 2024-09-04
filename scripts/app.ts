@@ -21,10 +21,6 @@ export class Application implements App {
 
   async init(): Promise<void> {
     this.loadProblemInfo();
-    const { redirectsEnabled } = await this.db.get();
-    if (redirectsEnabled) {
-      this.setRedirectsEnabled(true);
-    }
     this.renderFn();
   }
 
@@ -259,13 +255,12 @@ export class Application implements App {
     return "122";
   }
 
-  async getCompletionPercentage() {
+  async getCompletionPercentage(): Promise<string> {
     const percentage = (
-      (Number(await this.getCurrQuestionNumber()) /
-        Number(await this.getTotalQuestionCount())) *
-      100
-    ).toString();
-    return percentage;
+      (Number(await this.getCurrQuestionNumber()) - 1) /
+      Number(await this.getTotalQuestionCount())
+    ) * 100;
+    return percentage.toString();
   }
 
   async getProblemUrl() {
@@ -277,8 +272,12 @@ export class Application implements App {
   }
 
   async setRedirectsEnabled(value: boolean) {
-    const problem = await this.getProblemUrl();
-    this.nv?.setRedirectsEnabled(value, problem)
+    const problemUrl = await this.getProblemUrl();
+    await this.db.set({
+      redirectsEnabled: value
+    })
+    this.nv?.setRedirectsEnabled(value, problemUrl)
+    this.render()
   }
 
   async getProblemTitle() {
