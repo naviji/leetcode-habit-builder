@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
           isPaidOnly: false,
           status: null,
           title: "Binary Search",
-          titleSlug: "binary-search2",
+          titleSlug: "binary-search",
           topicTags: [
             {
               name: "Array",
@@ -29,7 +29,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
             {
               name: "Binary Search",
               id: "VG9waWNUYWdOb2RlOjEx",
-              slug: "binary-search2",
+              slug: "binary-search",
             },
           ],
           hasSolution: true,
@@ -49,7 +49,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       showDailyQuote: true,
       redirectsEnabled: false,
     });
-    await setRedirectRule("https://leetcode.com/problems/contains-duplicate/");
+    await setRedirectRule("https://leetcode.com/problems/binary-search/");
   } else {
     console.log("Updating");
   }
