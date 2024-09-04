@@ -167,7 +167,10 @@ export class Application implements App {
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
-    const problemDifficulty = await this.getProblemDifficulty();
+    // This is not the current question's problem difficulty (which is given by getProblemDifficutly()),
+    // but instead the difficulty filter that's currenlty active
+    // TOOD: Give it a better name!
+    const problemDifficulty = (await this.db.get()).problemDifficulty as string;
     if (problemDifficulty) {
       const difficulty = capitalizeFirstCharacter(problemDifficulty);
       this.allProblems = this.allProblems.filter(
@@ -201,6 +204,11 @@ export class Application implements App {
     await this.db.set({
       problems: problems,
     });
+
+    const { redirectsEnabled } = await this.db.get();
+    if (redirectsEnabled) {
+      this.nv?.setRedirectsEnabled(redirectsEnabled, await this.getProblemUrl());
+    }
     this.render();
   }
 

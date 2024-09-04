@@ -66,10 +66,17 @@ chrome.runtime.onMessage.addListener(async (message) => {
     await db.set({
       redirectsEnabled: true,
     });
-    const { url } = message.data;
+    let { url }: { url : string | undefined } = message.data;
+    if (!url) {
+      console.log("Error: No url provided, ignoring request to start redirection");
+      return;
+    }
     // Trailing slash is needed, else redirection seems to break when we try to pause and unpause.
     // No idea why though
-    await setRedirectRule(url + "/");
+    if (url[url.length - 1] !== "/") {
+      url += "/";
+    }
+    await setRedirectRule(url);
   } else {
     // Handle other messages or errors if necessary
     console.log("Unknown message received:", message);

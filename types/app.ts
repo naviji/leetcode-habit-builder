@@ -25,7 +25,7 @@ export interface App {
   getCompletionPercentage(): Promise<string>;
   getProblemUrl(): Promise<string>;
   getProblemTitle(): Promise<string>;
-  getProblemDifficulty(): Promise<string>;
+  getProblemDifficulty(): Promise<string | null>;
   getProblemTopics(): Promise<string[]>;
   getIncludePremiumProblems(): Promise<boolean>;
   getSnoozeInterval(): Promise<string>;
