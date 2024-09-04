@@ -20,7 +20,9 @@ export class Application implements App {
   }
 
   async init(): Promise<void> {
-    this.loadProblemInfo();
+    await this.loadProblemInfo();
+    await this.populateAllProblems();
+    await this.populateProblemTopics();
     this.renderFn();
   }
 
@@ -155,12 +157,7 @@ export class Application implements App {
     if (!this.questionInfo) {
       throw new Error("No question info");
     }
-    const problemSet = await this.getProblemSet();
-    const questionInfo = this.questionInfo as Questions;
-    const questionsInSet = questions[problemSet];
-    this.allProblems = questionsInSet.map(
-      (problemSlug) => questionInfo[problemSlug].data.question,
-    );
+    await this.populateAllProblems();
 
     function capitalizeFirstCharacter(s: string) {
       if (!s) return ""; // Check if the string is empty
@@ -212,11 +209,25 @@ export class Application implements App {
     this.render();
   }
 
+  private async populateAllProblems() {
+    const problemSet = await this.getProblemSet();
+    const questionInfo = this.questionInfo as Questions;
+    const questionsInSet = questions[problemSet];
+    this.allProblems = questionsInSet.map(
+      (problemSlug) => questionInfo[problemSlug].data.question
+    );
+  }
+
   async setProblemSet(problemSet: QuestionBankEnum) {
     await this.db.set({
       problemSet,
     });
     await this.chooseProblems();
+    this.populateProblemTopics();
+  }
+
+  private populateProblemTopics() {
+    this.populateAllProblems();
     const topicSet = new Set<string>();
     this.allProblems.forEach((problem) => {
       problem.topicTags.forEach((tag) => {
