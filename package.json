@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "main": "popup.js",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch"
+    "build": "npm run clean && tsc --outDir dist && cp -r data images ui dist/ && cp manifest.json dist/",
+    "watch": "tsc --outDir dist --watch",
+    "clean": "rm -rf dist"
   },
   "repository": {
     "type": "git",

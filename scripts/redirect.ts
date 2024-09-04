@@ -4,7 +4,6 @@ let problemUrl = ""
 const RULE_ID = 1
 
 export async function setRedirectRule(redirectUrl: string) {
-  redirectUrl = "https://leetcode.com/problems/contains-duplicate/"
   console.log("Setting Redirect", redirectUrl);
   problemUrl = redirectUrl
   console.log("problemUrl", problemUrl)

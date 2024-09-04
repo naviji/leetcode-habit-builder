@@ -1,6 +1,9 @@
 # Dependency directories
 node_modules/
 
+dist/
+
+
 # TypeScript cache
 *.tsbuildinfo
 
@@ -13,4 +16,6 @@ node_modules/
 scripts/*.js
 
 utils/venv
+
 /.DS_Store
+
