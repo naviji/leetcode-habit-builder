@@ -1,5 +1,5 @@
 import { QuestionBankEnum } from "../types/questions.js";
-import browserNavigator from "./browserNavigator.js";
+import navigator from "./extensionNavigator.js";
 import StorageEngine from "./chromeStorageEngine.js";
 // import StorageEngine from "./localStorageEngine.js";
 import { Application } from "./app.js";
@@ -321,4 +321,4 @@ export async function render(): Promise<void> {
 
 
 const db = new StorageEngine();
-const app = new Application(browserNavigator, db, render);
+const app = new Application(navigator, db, render);

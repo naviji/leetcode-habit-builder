@@ -6,10 +6,9 @@ const extensionNavigator: Navigator = {
   },
   setRedirectsEnabled: (enabled: boolean, url?: string) => {
     if (enabled) {
-      console.log(url)
-        // chrome.runtime.sendMessage({ action: "startRedirect", data: { url } });
+        chrome.runtime.sendMessage({ action: "startRedirect", data: { url } });
     } else {
-        // chrome.runtime.sendMessage({ action: "stopRedirect" });
+        chrome.runtime.sendMessage({ action: "stopRedirect" });
     }
   }
 };

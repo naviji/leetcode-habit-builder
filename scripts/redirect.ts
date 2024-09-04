@@ -40,8 +40,8 @@ export async function setRedirectRule(redirectUrl: string) {
 }
 
 export async function unsetRedirectRule() {
-  // chrome.webNavigation.onCommitted.removeListener(handleOnCommitted);
-  // chrome.webNavigation.onBeforeNavigate.removeListener(handleBeforeNavigation);
+  chrome.webNavigation.onCommitted.removeListener(handleOnCommitted);
+  chrome.webNavigation.onBeforeNavigate.removeListener(handleBeforeNavigation);
 
   await chrome.scripting.unregisterContentScripts()
   await chrome.declarativeNetRequest.updateDynamicRules({
