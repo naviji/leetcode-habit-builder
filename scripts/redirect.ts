@@ -1,41 +1,43 @@
-// let problemUrl = ""
+let problemUrl = ""
 // let tablId: number | null = null
 
 const RULE_ID = 1
 
 export async function setRedirectRule(redirectUrl: string) {
-  console.log("Calling setRedirectRule", redirectUrl)
-  // problemUrl = redirectUrl
+  redirectUrl = "https://leetcode.com/problems/contains-duplicate/"
+  console.log("Setting Redirect", redirectUrl);
+  problemUrl = redirectUrl
+  console.log("problemUrl", problemUrl)
+  const hostname = new URL(redirectUrl).hostname;
   const redirectRule: chrome.declarativeNetRequest.Rule = {
-    id: RULE_ID,
+    id: 1,
     action: {
       type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
       redirect: { url: redirectUrl },
     },
     condition: {
       urlFilter: "*://*/*",
-      // urlFilter: "*://reddit.com/*",
-      // excludedInitiatorDomains: [
-      //   "developer2.chrome.com", // To ease development
-      //   "leetcode.com"
-      // ],
+      excludedInitiatorDomains: [
+        "developer.chrome.com", // To ease development
+        hostname,
+      ],
       resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
     },
   };
   await chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [RULE_ID],
+    removeRuleIds: [1],
     addRules: [redirectRule],
   });
   await chrome.scripting.unregisterContentScripts()
   await chrome.scripting.registerContentScripts([
     {
-      id: "${RULE_ID}",
+      id: "1",
       js: ["scripts/content.js"],
       matches: [`${redirectUrl}*`],
     }
   ])
-  // chrome.webNavigation.onBeforeNavigate.addListener(handleBeforeNavigation);
-  // chrome.webNavigation.onCommitted.addListener(handleOnCommitted);
+  chrome.webNavigation.onBeforeNavigate.addListener(handleBeforeNavigation);
+  chrome.webNavigation.onCommitted.addListener(handleOnCommitted);
 }
 
 export async function unsetRedirectRule() {
@@ -59,36 +61,36 @@ export async function unsetRedirectRule() {
   // console.log("urlTracker", urlTracker)
 }
 
-// const handleBeforeNavigation = async (details: chrome.webNavigation.WebNavigationFramedCallbackDetails) => {
-//   if (details.frameId === 0) {
-//     // const { urlTracker = {} } = await chrome.storage.local.get("urlTracker")
-//     // This is a main fram event navigation which could turn out to be redirected because of our ruleset
-//     // Maintain this history on a per tab level for future redirect back
-//     // urlTracker[details.tabId] = details.url
-//     // chrome.storage.local.set({ urlTracker })
+const handleBeforeNavigation = async (details: chrome.webNavigation.WebNavigationFramedCallbackDetails) => {
+  if (details.frameId === 0) {
+    // const { urlTracker = {} } = await chrome.storage.local.get("urlTracker")
+    // This is a main fram event navigation which could turn out to be redirected because of our ruleset
+    // Maintain this history on a per tab level for future redirect back
+    // urlTracker[details.tabId] = details.url
+    // chrome.storage.local.set({ urlTracker })
 
-//     console.log("Going to url ", details.url, " from ", details.tabId)
-//     tablId = details.tabId
-//   }
-// }
+    console.log("Going to url ", details.url, " from ", details.tabId)
+    // tablId = details.tabId
+  }
+}
 
-// const handleOnCommitted = async (details: chrome.webNavigation.WebNavigationFramedCallbackDetails) => {
-//   if (details.frameId === 0) {
-//     // This is a main fram event
-//       if (tablId === details.tabId && details.url === problemUrl) {
-//         console.log("Committed to url ", details.url, " from ", details.tabId)
-//         tablId = null
-//       }
+const handleOnCommitted = async (details: chrome.webNavigation.WebNavigationFramedCallbackDetails) => {
+  if (details.frameId === 0) {
+    // This is a main fram event
+      // if (tablId === details.tabId && details.url === problemUrl) {
+      //   console.log("Committed to url ", details.url, " from ", details.tabId)
+      //   tablId = null
+      // }
 
-//     // const { urlTracker = {} } = await chrome.storage.local.get("urlTracker")
+    // const { urlTracker = {} } = await chrome.storage.local.get("urlTracker")
 
-//     // if (urlTracker[details.tabId] && 
-//     //   urlTracker[details.tabId] !== details.url) {
-//     //     if (details.url !== problemUrl) {
-//     //       // Some other redirection we don't care about; delete from our tracker
-//     //       delete urlTracker[details.tabId]
-//     //       await chrome.storage.local.set({ urlTracker })
-//     //     }
-//     // }
-//   }
-// }
+    // if (urlTracker[details.tabId] && 
+    //   urlTracker[details.tabId] !== details.url) {
+    //     if (details.url !== problemUrl) {
+    //       // Some other redirection we don't care about; delete from our tracker
+    //       delete urlTracker[details.tabId]
+    //       await chrome.storage.local.set({ urlTracker })
+    //     }
+    // }
+  }
+}
