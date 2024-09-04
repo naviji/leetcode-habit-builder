@@ -271,12 +271,12 @@ export class Application implements App {
     );
   }
 
-  async setRedirectsEnabled(value: boolean) {
+  async setRedirectsEnabled(disabled: boolean) {
     const problemUrl = await this.getProblemUrl();
     await this.db.set({
-      redirectsEnabled: value
+      redirectsEnabled: !disabled
     })
-    this.nv?.setRedirectsEnabled(value, problemUrl)
+    this.nv?.setRedirectsEnabled(!disabled, problemUrl)
     this.render()
   }
 

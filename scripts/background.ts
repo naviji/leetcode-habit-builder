@@ -47,7 +47,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       whitelistedUrls: "",
       redirectOnSuccess: true,
       showDailyQuote: true,
-      redirectsEnabled: false,
+      redirectsEnabled: true,
     });
     await setRedirectRule("https://leetcode.com/problems/binary-search/");
   } else {
