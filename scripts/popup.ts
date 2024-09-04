@@ -316,6 +316,21 @@ export async function render(): Promise<void> {
   if (problemsPerDayInput) {
     problemsPerDayInput.value = await app.getProblemsPerDay();
   }
+
+
+    // Problem difficulty
+  const problemDifficultySelect = document.getElementById(
+    "problem-difficulty-select",
+  ) as HTMLSelectElement;
+  if (problemDifficultySelect) {
+    const problemDifficulty = await app.getProblemDifficulty();
+    for (const option of problemDifficultySelect.options) {
+      if (option.value === problemDifficulty) {
+        option.selected = true;
+        break;
+      }
+    }
+  }
 }
 
 
