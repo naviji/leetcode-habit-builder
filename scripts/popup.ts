@@ -188,7 +188,7 @@ export async function render(): Promise<void> {
     question.classList.remove(`question--easy`);
     question.classList.remove(`question--medium`);
     question.classList.remove(`question--hard`);
-    question.classList.add(`question--${await app.getProblemDifficulty()}`);
+    question.classList.add(`question--${await app.getCurrentProblemDifficulty()}`);
   }
 
   // Set streak count
@@ -324,10 +324,15 @@ export async function render(): Promise<void> {
   ) as HTMLSelectElement;
   if (problemDifficultySelect) {
     const problemDifficulty = await app.getProblemDifficulty();
-    for (const option of problemDifficultySelect.options) {
-      if (option.value === problemDifficulty) {
-        option.selected = true;
-        break;
+    if (!problemDifficulty) {
+      problemDifficultySelect.selectedIndex = 0;
+    }
+    else {
+      for (const option of problemDifficultySelect.options) {
+        if (option.value === problemDifficulty) {
+          option.selected = true;
+          break;
+        }
       }
     }
   }

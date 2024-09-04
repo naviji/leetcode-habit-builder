@@ -306,9 +306,13 @@ export class Application implements App {
   }
 
   async getProblemDifficulty() {
-    const { problems = [] } = await this.db.get();
-    const { problemsSolved = 0 } = await this.db.get();
-    const problem = problems[problemsSolved];
-    return problem.difficulty.toLowerCase();
+    return (await this.db.get()).problemDifficulty as string | null;
+  }
+
+  async getCurrentProblemDifficulty(): Promise<string> {
+      const { problems = [] } = await this.db.get();
+      const { problemsSolved = 0 } = await this.db.get();
+      const problem = problems[problemsSolved];
+      return problem.difficulty.toLowerCase();
   }
 }

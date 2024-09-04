@@ -26,6 +26,7 @@ export interface App {
   getProblemUrl(): Promise<string>;
   getProblemTitle(): Promise<string>;
   getProblemDifficulty(): Promise<string | null>;
+  getCurrentProblemDifficulty(): Promise<string>;
   getProblemTopics(): Promise<string[]>;
   getIncludePremiumProblems(): Promise<boolean>;
   getSnoozeInterval(): Promise<string>;
