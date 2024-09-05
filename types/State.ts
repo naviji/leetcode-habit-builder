@@ -15,4 +15,5 @@ export interface State {
     showDailyQuote?: boolean;
     problemTopic?: string | null;
     redirectsEnabled?: boolean;
+    streakCount?: number;
 }

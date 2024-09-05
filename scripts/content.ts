@@ -7,7 +7,7 @@ async function checkForAcceptedSubmission() {
   );
   if (spanElement && spanElement.textContent === "Accepted") {
     console.log("Successful submission detected")
-    chrome.runtime.sendMessage({ action: "stopRedirect" });
+    chrome.runtime.sendMessage({ action: "problemSolved" });
   }
 }
 

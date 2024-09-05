@@ -274,7 +274,8 @@ export class Application implements App {
 
   async getCurrQuestionNumber() {
     const { problemsSolved = 0 } = await this.db.get();
-    return (problemsSolved + 1).toString();
+    const { problemsPerDay = 1 } = await this.db.get();
+    return (Math.min(problemsSolved + 1, problemsPerDay)).toString();
   }
 
   async getTotalQuestionCount() {
@@ -283,7 +284,8 @@ export class Application implements App {
   }
 
   async getStreakCount() {
-    return "122";
+    const { streakCount = 0 } = await this.db.get();
+    return streakCount.toString();
   }
 
   async getCompletionPercentage(): Promise<string> {
