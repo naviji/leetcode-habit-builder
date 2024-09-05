@@ -42,6 +42,12 @@ export class Application implements App {
     await this.db.set({
       redirectOnSuccess: value,
     });
+    const { redirectsEnabled } = await this.db.get();
+    if (redirectsEnabled) {
+      // To update the redirection ruleset
+      await this.setRedirectsEnabled(false)
+    }
+    
   }
 
   async getRedirectOnSuccess(): Promise<boolean> {

@@ -9,6 +9,7 @@ let redirectHandler: (
 export async function setRedirectRule(
   redirectUrl: string,
   whiteListedUrls: string[],
+  redirectOnSuccess = true
 ) {
   console.log("Setting Redirect Rule", redirectUrl, whiteListedUrls);
   // Clean up in case setRedirectRule is called multiple times
@@ -58,13 +59,15 @@ export async function setRedirectRule(
   };
   // Listen for when a user navigates to a new page
   chrome.webNavigation.onBeforeNavigate.addListener(redirectHandler);
-  await chrome.scripting.registerContentScripts([
-    {
-      id: "1",
-      js: ["scripts/content.js"],
-      matches: [`${redirectUrl}*`],
-    },
-  ]);
+  if (redirectOnSuccess) {
+    await chrome.scripting.registerContentScripts([
+      {
+        id: "1",
+        js: ["scripts/content.js"],
+        matches: [`${redirectUrl}*`],
+      },
+    ]);
+  }
 
   function compareHostNames(currentUrl: string) {
     const currentUrlObj = new URL(currentUrl);
@@ -80,11 +83,11 @@ export async function setRedirectRule(
   }
 }
 
-export async function unsetRedirectRule() {
+export async function unsetRedirectRule(redirectOnSuccess = true) {
   await chrome.scripting.unregisterContentScripts();
   if (chrome.webNavigation.onBeforeNavigate.hasListener(redirectHandler)) {
     chrome.webNavigation.onBeforeNavigate.removeListener(redirectHandler);
-    if (savedUrl && savedTabId) {
+    if (savedUrl && savedTabId && redirectOnSuccess) {
       chrome.tabs.update(savedTabId, { url: savedUrl });
     }
   }

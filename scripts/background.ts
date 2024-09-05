@@ -61,25 +61,27 @@ chrome.runtime.onMessage.addListener(async (message) => {
     await db.set({
       redirectsEnabled: false,
     });
-    await unsetRedirectRule();
+    const { redirectOnSuccess } = await db.get();
+    await unsetRedirectRule(redirectOnSuccess);
   } else if (message.action === "startRedirect") {
     await db.set({
       redirectsEnabled: true,
     });
+    const { redirectOnSuccess } = await db.get();
     const { url }: { url : string | undefined } = message.data;
     if (!url) {
       console.log("Error: No url provided, ignoring request to start redirection");
       return;
     }
-    await setRedirectionWithWhiteListing(url);
+    await setRedirectionWithWhiteListing(url, redirectOnSuccess);
   } else {
     // Handle other messages or errors if necessary
     console.log("Unknown message received:", message);
   }
 });
 
-async function setRedirectionWithWhiteListing(url: string) {
+async function setRedirectionWithWhiteListing(url: string, redirectOnSuccess = true) {
   const whiteListedUrls = (await db.get()).whitelistedUrls?.split("\n") || [];
-  await setRedirectRule(url, whiteListedUrls);
+  await setRedirectRule(url, whiteListedUrls, redirectOnSuccess);
 }
 

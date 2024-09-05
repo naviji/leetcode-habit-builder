@@ -11,6 +11,7 @@ const extensionNavigator: Navigator = {
         chrome.runtime.sendMessage({ action: "stopRedirect" });
     }
   }
+
 };
 
 export default extensionNavigator;
