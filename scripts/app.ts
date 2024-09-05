@@ -75,6 +75,12 @@ export class Application implements App {
     await this.db.set({
       whitelistedUrls: value,
     });
+    const { redirectsEnabled } = await this.db.get();
+
+    if (redirectsEnabled) {
+      // To update the redirection ruleset
+      await this.setRedirectsEnabled(false)
+    }
   }
 
   async getWhitelistedUrls(): Promise<string> {

@@ -44,7 +44,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       includePremiumProblems: false,
       snoozeInterval: 12,
       restInterval: 24,
-      whitelistedUrls: "https://google.com\nhttps://leetcode.com",
+      whitelistedUrls: "google.com\nleetcode.com",
       redirectOnSuccess: true,
       showDailyQuote: true,
       redirectsEnabled: true,
