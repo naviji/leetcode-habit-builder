@@ -44,12 +44,12 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       includePremiumProblems: false,
       snoozeInterval: 12,
       restInterval: 24,
-      whitelistedUrls: "",
+      whitelistedUrls: "https://google.com\nhttps://leetcode.com",
       redirectOnSuccess: true,
       showDailyQuote: true,
       redirectsEnabled: true,
     });
-    await setRedirectRule("https://leetcode.com/problems/binary-search/");
+    await setRedirectionWithWhiteListing("https://leetcode.com/problems/binary-search/");
   } else {
     console.log("Updating");
   }
@@ -66,19 +66,20 @@ chrome.runtime.onMessage.addListener(async (message) => {
     await db.set({
       redirectsEnabled: true,
     });
-    let { url }: { url : string | undefined } = message.data;
+    const { url }: { url : string | undefined } = message.data;
     if (!url) {
       console.log("Error: No url provided, ignoring request to start redirection");
       return;
     }
-    // Trailing slash is needed, else redirection seems to break when we try to pause and unpause.
-    // No idea why though
-    if (url[url.length - 1] !== "/") {
-      url += "/";
-    }
-    await setRedirectRule(url);
+    await setRedirectionWithWhiteListing(url);
   } else {
     // Handle other messages or errors if necessary
     console.log("Unknown message received:", message);
   }
 });
+
+async function setRedirectionWithWhiteListing(url: string) {
+  const whiteListedUrls = (await db.get()).whitelistedUrls?.split("\n") || [];
+  await setRedirectRule(url, whiteListedUrls);
+}
+
