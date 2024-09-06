@@ -16,6 +16,7 @@ export interface App {
   setShowDailyQuote(value: boolean): Promise<void>;
   setRedirectsEnabled(value: boolean): Promise<void>;
   setProblemTopic(value: string): void;
+  markProblemSolved(): Promise<void>;
 
 
   getDailyQuote(): Promise<string>;
@@ -38,6 +39,4 @@ export interface App {
   getProblemsPerDay(): Promise<string>;
   getProblemTopic(): Promise<string>;
   getRedirectsEnabled(): Promise<boolean>;
-
-  openTab(url: string): void;
 }

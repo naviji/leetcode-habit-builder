@@ -1,11 +1,12 @@
 import { QuestionBankEnum } from "../types/questions.js";
-import navigator from "./extensionNavigator.js";
 import StorageEngine from "./chromeStorageEngine.js";
-// import StorageEngine from "./localStorageEngine.js";
+import UIController from "./uiController.js";
 import { Application } from "./app.js";
 
+const app = new Application(new StorageEngine(), new UIController(), render);
+
 document.addEventListener("DOMContentLoaded", async () => {
-  await app.init();
+  await app.init(false);
   addNavigationEventHandlers();
   addSettingsEventHandlers();
 });
@@ -133,7 +134,7 @@ function addNavigationEventHandlers() {
   const questionLink = document.querySelector(".question__link");
   questionLink?.addEventListener("click", async () => {
     const problemUrl = await app.getProblemUrl();
-    app.openTab(problemUrl);
+    chrome.tabs.create({ url: problemUrl});
   });
 
   const skipButton = document.querySelector(".buttons__button--left");
@@ -338,7 +339,3 @@ export async function render(): Promise<void> {
   }
 }
 
-
-
-const db = new StorageEngine();
-const app = new Application(navigator, db, render);

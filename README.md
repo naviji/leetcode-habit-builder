@@ -1,6 +1,10 @@
 # leetcode-habit-builder
 
 # TODO
+0. Extract chooseProblems out of app and put it in common place
+1. Add an alarm that fetches the next set of problems each day
+
+
 1. Button Hover Effect on Solve button
 1. Indicator that the extension is active
 2. Show a congrats modal and +1 streak counter on successful problem submission
